@@ -65,9 +65,9 @@ Route handler `app/api/harmonogram/route.ts` przyjmuje parametry w query string:
 - `wskaznik`
 - `typRat`
 - `pierwszaRata`
-- `nadplaty` (opcjonalnie, serializowane jako lista obiektów z `miesiac`, `kwotaGr`, `tryb`)
+- `nadplaty` (opcjonalnie, jako lista wpisów tekstowych `miesiac:kwotaGr:tryb`, rozdzielanych przecinkami)
 
-Route zwraca JSON z następującym typem:
+Route zwraca JSON sukcesu albo JSON błędu:
 
 ```ts
 export interface Nadplata {
@@ -91,8 +91,15 @@ export interface ApiHarmonogramResponse {
   rataPierwsza: number;
   rataOstatnia: number;
   sumaOdsetek: number;
-  blad?: string;
 }
+
+export interface ApiHarmonogramBlad {
+  blad: string;
+  przyklad?: string;
+  parametry?: ParametryKredytu;
+}
+
+export type ApiHarmonogramResult = ApiHarmonogramResponse | ApiHarmonogramBlad;
 ```
 
 Pola pieniężne odpowiedzi API są wyrażone w złotych jako liczby dziesiętne, ponieważ ten kontrakt jest bezpośrednio konsumowany przez ekran. Wejściowa kwota `kwota` jest podawana w złotych, natomiast drugi składnik każdego fragmentu `nadplaty` jest całkowitą liczbą groszy, np. `1:200000:obnizRate`.
