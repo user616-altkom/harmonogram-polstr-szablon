@@ -15,14 +15,14 @@ function parsujNadplaty(wartosc: string | null): Nadplata[] | string {
   for (const fragment of wartosc.split(',')) {
     const [miesiacTekst, kwotaTekst, trybTekst] = fragment.split(':');
     const miesiac = Number(miesiacTekst);
-    const kwota = Number(kwotaTekst);
+    const kwotaGr = Number(kwotaTekst);
     const tryb = trybTekst === 'obnizRate' || trybTekst === 'rata' ? 'obnizRate' : trybTekst === 'skrocOkres' || trybTekst === 'okres' ? 'skrocOkres' : null;
 
-    if (!Number.isInteger(miesiac) || miesiac <= 0 || !Number.isFinite(kwota) || kwota <= 0 || tryb === null) {
+    if (!Number.isInteger(miesiac) || miesiac <= 0 || !Number.isInteger(kwotaGr) || kwotaGr <= 0 || tryb === null) {
       return 'nadplaty: lista w formacie miesiac:kwota:obnizRate albo miesiac:kwota:skrocOkres';
     }
 
-    nadplaty.push({ miesiac, kwotaGr: Math.round(kwota * 100), tryb });
+    nadplaty.push({ miesiac, kwotaGr, tryb });
   }
 
   return nadplaty;
