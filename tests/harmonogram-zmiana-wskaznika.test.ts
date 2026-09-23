@@ -25,4 +25,15 @@ describe('zmiana wskaźnika w harmonogramie', () => {
     expect(wynik.raty[1]?.data).toBe('2026-03-01');
     expect(wynik.raty[2]?.data).toBe('2026-04-01');
   });
+
+  it('odrzuca datę raty wcześniejszą niż pierwszy wpis serii', () => {
+    expect(() => policzHarmonogram({
+      kwotaGr: 1_200_000,
+      liczbaRat: 3,
+      marza: 0,
+      typRat: 'rowne',
+      wskaznik: 'POLSTR_1M',
+      pierwszaRata: '2025-12-01',
+    })).toThrow('brak stawki wskaźnika');
+  });
 });
