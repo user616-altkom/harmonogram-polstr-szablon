@@ -3,8 +3,8 @@
 import { useId, useState, type CSSProperties, type FormEvent } from 'react';
 
 const API_URL = process.env.NEXT_PUBLIC_HARMONOGRAM_URL ?? '/api/harmonogram';
-const ZDJECIE: string | null = '/zdjecie-klucze.jpg';
-const ZDJECIE_ALT = 'Uśmiechnięta para z kluczami do nowego mieszkania';
+const ZDJECIE: string | null = '/image.png';
+const ZDJECIE_ALT = 'Ilustracja rodziny przed nowym domem';
 
 type Wskaznik = 'POLSTR1M' | 'WIBOR3M';
 type TypRat = 'rowne' | 'malejace';
@@ -12,8 +12,8 @@ type TrybNadplaty = 'rata' | 'okres';
 
 interface Nadplata { miesiac: string; kwota: string; tryb: TrybNadplaty }
 interface Rata { nr: number; data: string; kapital: number; odsetki: number; rata: number; saldo: number; nadplata?: number }
-interface OdpowiedzApi { raty?: Rata[]; rataPierwsza?: number; rataOstatnia?: number; sumaOdsetek?: number; oprocentowanie?: number }
-interface Wynik { raty: Rata[]; rataPierwsza?: number; rataOstatnia?: number; sumaOdsetek: number; oprocentowanie?: number }
+interface OdpowiedzApi { raty?: Rata[]; rataPierwsza?: number; rataOstatnia?: number; sumaOdsetek?: number }
+interface Wynik { raty: Rata[]; rataPierwsza?: number; rataOstatnia?: number; sumaOdsetek: number }
 interface Formularz { kwota: string; liczbaRat: string; pierwszaRata: string; marza: string; wskaznik: Wskaznik; typRat: TypRat }
 
 const THEME = {
@@ -38,11 +38,6 @@ const csvNum = (v: unknown) => Number(v).toFixed(2).replace('.', ',');
 const formatDate = (s: string) => {
   const d = new Date(s);
   return Number.isNaN(d.getTime()) ? s : d.toLocaleDateString('pl-PL', { day: '2-digit', month: '2-digit', year: 'numeric' });
-};
-const todayPlusMonth = () => {
-  const d = new Date();
-  d.setMonth(d.getMonth() + 1, 10);
-  return d.toISOString().slice(0, 10);
 };
 const toNum = (s: string) => String(s).replace(/\s/g, '').replace(',', '.');
 
@@ -164,7 +159,6 @@ export default function Page() {
         rataPierwsza: data.rataPierwsza ?? raty[0]?.rata,
         rataOstatnia: data.rataOstatnia ?? raty[raty.length - 1]?.rata,
         sumaOdsetek: data.sumaOdsetek ?? raty.reduce((s, r) => s + Number(r.odsetki), 0),
-        oprocentowanie: data.oprocentowanie,
       });
     } catch (ex) {
       setWynik(null);
@@ -299,7 +293,6 @@ export default function Page() {
                       Tabela rat{' '}
                       <span className={cx('text-[17px] font-normal', T.muted)}>
                         · {wynik.raty.length} rat
-                        {wynik.oprocentowanie != null && ` · oprocentowanie ${Number(wynik.oprocentowanie).toFixed(2).replace('.', ',')}%`}
                       </span>
                     </h2>
                     <button type="button" onClick={eksportCSV} className={T.btnGhost}>Eksport CSV</button>

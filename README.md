@@ -2,7 +2,7 @@
 
 Szablon repozytorium na projekt końcowy szkolenia z AI w cyklu wytwarzania oprogramowania (dzień 3). Cel projektu: kalkulator harmonogramu spłat kredytu hipotecznego ze zmiennym oprocentowaniem na POLSTR 1M lub WIBOR 3M, budowany od zera w TypeScript i Next.js metodyką spec-kit z GitHub Copilotem, wdrażany z GitHuba na Vercel.
 
-Repozytorium zawiera zainicjalizowany spec-kit dla Copilota (skrypty PowerShell), szkielet Next.js (App Router, TypeScript, Tailwind) z pustym modułem domenowym i testami vitest, dane przykładowe wskaźników, workflow GitHub Actions, reguły review dla Copilota i skrypty rutyny review przez Copilot CLI. Nie zawiera implementacji, ta powstaje w trakcie dnia.
+Repozytorium zawiera zainicjalizowany spec-kit dla Copilota (skrypty PowerShell), aplikację Next.js (App Router, TypeScript, Tailwind) z czystym modułem domenowym i testami vitest, dane przykładowe wskaźników, workflow GitHub Actions, reguły review dla Copilota i skrypty rutyny review przez Copilot CLI.
 
 Dokumenty do przeczytania na start:
 
@@ -14,8 +14,8 @@ Dokumenty do przeczytania na start:
 
 - `src/domena/harmonogram.ts`: czyste funkcje obliczeniowe, bez React i bez I/O. Tu trafia cała logika.
 - `src/dane/wskazniki.ts`: serie wskaźników zaimportowane z `dane/*.json`.
-- `app/api/harmonogram/route.ts`: `GET /api/harmonogram`, parsuje parametry z query string, woła domenę, zwraca JSON. Na razie odpowiada 501 „nie zaimplementowano” z przykładem parametrów.
-- `app/page.tsx`: strona główna. Tu wchodzi ekran z Claude Design.
+- `app/api/harmonogram/route.ts`: `GET /api/harmonogram`, parsuje parametry z query string, woła domenę i zwraca JSON tabeli rat. Nadpłaty mają format `miesiac:kwotaGr:tryb`, np. `1:200000:obnizRate`.
+- `app/page.tsx`: ekran kalkulatora z formularzem, tabelą rat i eksportem CSV.
 - `tests/`: testy vitest domeny i danych.
 - `dane/`: serie POLSTR 1M i WIBOR 3M.
 - `.github/`, `.specify/`: skille spec-kit, instrukcje review, workflow Actions.
