@@ -70,16 +70,16 @@
 
 ### Testy dla User Story 2 (WYMAGANE)
 
-- [ ] T014 [P] [US2] Dodaj test dla zmiany okresowej stopy w `tests/harmonogram-zmiana-wskaznika.test.ts` obejmujący zmiany POLSTR/WIBOR i zachowanie dla ostatniej znanej wartości
-- [ ] T015 [P] [US2] Dodaj test dla nadpłat w `tests/harmonogram-nadplaty.test.ts` obejmujący oba tryby: `obnizRate` i `skrocOkres`
+- [x] T014 [P] [US2] Dodaj test dla zmiany okresowej stopy w `tests/harmonogram-zmiana-wskaznika.test.ts` obejmujący zmiany POLSTR/WIBOR i zachowanie dla ostatniej znanej wartości
+- [x] T015 [P] [US2] Dodaj test dla nadpłat w `tests/harmonogram-nadplaty.test.ts` obejmujący oba tryby: `obnizRate` i `skrocOkres`
 
 ### Implementacja dla User Story 2
 
-- [ ] T016 [P] [US2] Zaimplementuj logikę wyboru wskaźnika w `src/domena/harmonogram.ts` na podstawie okresowych serii z `src/dane/wskazniki.ts`
-- [ ] T017 [US2] Dodaj logikę wyboru kolejnej poprawnej wartości wskaźnika i fallbacku do ostatniej znanej wartości w `src/domena/harmonogram.ts`
-- [ ] T018 [US2] Zaimplementuj obliczanie harmonogramu dla rat malejących w `src/domena/harmonogram.ts` obok logiki rat równych
-- [ ] T019 [US2] Zaimplementuj przetwarzanie nadpłat w `src/domena/harmonogram.ts` z dwoma trybami: `obnizRate` i `skrocOkres`
-- [ ] T020 [US2] Zaktualizuj kontrakt route handlra w `app/api/harmonogram/route.ts`, aby dodatkowe parametry były przyjmowane i przekazywane bez wprowadzania logiki biznesowej do routingu
+- [x] T016 [P] [US2] Zaimplementuj logikę wyboru wskaźnika w `src/domena/harmonogram.ts` na podstawie okresowych serii z `src/dane/wskazniki.ts`
+- [x] T017 [US2] Dodaj logikę wyboru kolejnej poprawnej wartości wskaźnika i fallbacku do ostatniej znanej wartości w `src/domena/harmonogram.ts`
+- [x] T018 [US2] Zaimplementuj obliczanie harmonogramu dla rat malejących w `src/domena/harmonogram.ts` obok logiki rat równych
+- [x] T019 [US2] Zaimplementuj przetwarzanie nadpłat w `src/domena/harmonogram.ts` z dwoma trybami: `obnizRate` i `skrocOkres`
+- [x] T020 [US2] Zaktualizuj kontrakt route handlra w `app/api/harmonogram/route.ts`, aby dodatkowe parametry były przyjmowane i przekazywane bez wprowadzania logiki biznesowej do routingu
 
 **Punkt kontrolny**: W tej chwili User Stories 1 i 2 powinny działać niezależnie.
 
