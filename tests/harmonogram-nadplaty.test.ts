@@ -38,4 +38,15 @@ describe('nadpłaty', () => {
     expect(wynik.raty[0]?.nadplataGr).toBe(500_000);
     expect(wynik.raty.at(-1)?.saldoPoSplacieGr).toBe(0);
   });
+
+  it('nie pobiera pełnej raty po dużej nadpłacie w trybie skrocOkres', () => {
+    const wynik = policzHarmonogram({
+      ...parametryBazowe,
+      nadplaty: [{ miesiac: 1, kwotaGr: 800_000, tryb: 'skrocOkres' }],
+    });
+
+    expect(wynik.raty).toHaveLength(2);
+    expect(wynik.raty[1]?.rataGr).toBe(4_013);
+    expect(wynik.raty[1]?.saldoPoSplacieGr).toBe(0);
+  });
 });

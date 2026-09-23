@@ -156,7 +156,7 @@ function policzRatyRowne(parametry: ParametryKredytu): Harmonogram {
     const odsetkiGr = Math.round(saldoGr * stawkaMiesieczna);
     const rataDoZaplatyGr = numer === parametry.liczbaRat
       ? saldoGr + odsetkiGr
-      : rataBiezacaGr;
+      : Math.min(rataBiezacaGr, saldoGr + odsetkiGr);
     const czescKapitalowaGr = Math.min(rataDoZaplatyGr - odsetkiGr, saldoGr);
     saldoGr = Math.max(0, saldoGr - czescKapitalowaGr);
     const nadplataGr = Math.min(nadplata?.kwotaGr ?? 0, saldoGr);
