@@ -1,4 +1,15 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+
+vi.mock('../src/dane/wskazniki', () => ({
+  seriaWskaznika: (wskaznik: 'POLSTR_1M' | 'WIBOR_3M') => {
+    if (wskaznik === 'POLSTR_1M') {
+      return [{ od: '2026-01-01', stopa: 0.0355 }];
+    }
+
+    return [{ od: '2026-01-01', stopa: 0.0399 }];
+  },
+}));
+
 import { seriaWskaznika } from '../src/dane/wskazniki';
 import { policzHarmonogram } from '../src/domena/harmonogram';
 

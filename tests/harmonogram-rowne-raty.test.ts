@@ -1,4 +1,9 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+
+vi.mock('../src/dane/wskazniki', () => ({
+  seriaWskaznika: () => [{ od: '2026-01-01', stopa: 0.0355 }],
+}));
+
 import { policzHarmonogram } from '../src/domena/harmonogram';
 
 describe('harmonogram rat równych', () => {
@@ -28,5 +33,29 @@ describe('harmonogram rat równych', () => {
 
     const sumaKapitalow = wynik.raty.reduce((suma, rata) => suma + rata.czescKapitalowaGr, 0);
     expect(sumaKapitalow).toBe(400_000_00);
+  });
+
+  it('odrzuca nieistniejące daty i pola, które nie są liczbami całkowitymi', () => {
+    expect(() =>
+      policzHarmonogram({
+        kwotaGr: 400_000_00,
+        liczbaRat: 300,
+        marza: 0.0211,
+        typRat: 'rowne',
+        wskaznik: 'POLSTR_1M',
+        pierwszaRata: '2026-02-31',
+      }),
+    ).toThrow('niepoprawny format daty');
+
+    expect(() =>
+      policzHarmonogram({
+        kwotaGr: 400_000_00,
+        liczbaRat: 12.5,
+        marza: 0.0211,
+        typRat: 'rowne',
+        wskaznik: 'POLSTR_1M',
+        pierwszaRata: '2026-10-01',
+      }),
+    ).toThrow('liczbaRat musi być dodatnią liczbą całkowitą');
   });
 });

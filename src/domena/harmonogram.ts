@@ -26,14 +26,10 @@ export interface Harmonogram {
   sumaOdsetekGr: number;
 }
 
-function zaokraglijDoMiesiaca(value: number): number {
-  return Math.round(value * 10_000) / 10_000;
-}
-
 function dataDoIso(data: string): Date {
   const fragmenty = data.split('-');
 
-  if (fragmenty.length !== 3) {
+  if (fragmenty.length !== 3 || !/^\d{4}-\d{2}-\d{2}$/.test(data)) {
     throw new Error(`niepoprawny format daty: ${data}`);
   }
 
@@ -45,13 +41,27 @@ function dataDoIso(data: string): Date {
     throw new Error(`niepoprawny format daty: ${data}`);
   }
 
-  return new Date(Date.UTC(rok, miesiac - 1, dzien));
+  const wynik = new Date(Date.UTC(rok, miesiac - 1, dzien));
+
+  if (
+    wynik.getUTCFullYear() !== rok ||
+    wynik.getUTCMonth() !== miesiac - 1 ||
+    wynik.getUTCDate() !== dzien
+  ) {
+    throw new Error(`niepoprawny format daty: ${data}`);
+  }
+
+  return wynik;
 }
 
 function dataPoMiesiacu(data: Date, offset: number): Date {
-  const wynik = new Date(data);
-  wynik.setUTCMonth(wynik.getUTCMonth() + offset);
-  return wynik;
+  const rok = data.getUTCFullYear();
+  const miesiac = data.getUTCMonth();
+  const dzien = data.getUTCDate();
+  const docelowyMiesiac = miesiac + offset;
+  const ostatniDzienMiesiaca = new Date(Date.UTC(rok, docelowyMiesiac + 1, 0)).getUTCDate();
+
+  return new Date(Date.UTC(rok, docelowyMiesiac, Math.min(dzien, ostatniDzienMiesiaca)));
 }
 
 function formatujDate(date: Date): string {
@@ -61,8 +71,7 @@ function formatujDate(date: Date): string {
 function pobierzStawkeBazowa(wskaznik: ParametryKredytu['wskaznik']): number {
   const serie = seriaWskaznika(wskaznik);
   const ostatniWpis = serie[serie.length - 1];
-  const stawka = ostatniWpis?.stopa ?? 0;
-  return zaokraglijDoMiesiaca(stawka);
+  return ostatniWpis?.stopa ?? 0;
 }
 
 function policzRatyMalejace(parametry: ParametryKredytu): Harmonogram {
@@ -128,13 +137,19 @@ function policzRatyRowne(parametry: ParametryKredytu): Harmonogram {
 }
 
 export function policzHarmonogram(parametry: ParametryKredytu): Harmonogram {
-  if (parametry.liczbaRat <= 0) {
-    throw new Error('liczbaRat musi być dodatnia');
+  if (!Number.isInteger(parametry.liczbaRat) || parametry.liczbaRat <= 0) {
+    throw new Error('liczbaRat musi być dodatnią liczbą całkowitą');
   }
 
-  if (parametry.kwotaGr <= 0) {
-    throw new Error('kwotaGr musi być dodatnia');
+  if (!Number.isInteger(parametry.kwotaGr) || parametry.kwotaGr <= 0) {
+    throw new Error('kwotaGr musi być dodatnią liczbą całkowitą w groszach');
   }
+
+  if (!Number.isFinite(parametry.marza) || parametry.marza < 0) {
+    throw new Error('marza musi być liczbą dodatnią lub równą zero');
+  }
+
+  dataDoIso(parametry.pierwszaRata);
 
   if (parametry.typRat === 'rowne') {
     return policzRatyRowne(parametry);
