@@ -15,7 +15,7 @@ const parametryBazowe = {
   pierwszaRata: '2026-01-01',
 };
 
-function sumaKapitaluIZasad(wynik: ReturnType<typeof policzHarmonogram>): number {
+function sumaKapitaluINadplat(wynik: ReturnType<typeof policzHarmonogram>): number {
   return wynik.raty.reduce((suma, rata) => suma + rata.czescKapitalowaGr + (rata.nadplataGr ?? 0), 0);
 }
 
@@ -31,7 +31,7 @@ describe('CR-A: tryb rozliczenia nadpłaty', () => {
     expect(wynik.raty[1]?.rataGr).toBe(203_811);
     expect(wynik.raty).toHaveLength(240);
     expect(wynik.raty.at(-1)?.saldoPoSplacieGr).toBe(0);
-    expect(sumaKapitaluIZasad(wynik)).toBe(30_000_000);
+    expect(sumaKapitaluINadplat(wynik)).toBe(30_000_000);
   });
 
   it('skrac okres, zachowuje rate i wyrownuje ostatnia rate', () => {
@@ -44,7 +44,7 @@ describe('CR-A: tryb rozliczenia nadpłaty', () => {
     expect(wynik.raty).toHaveLength(196);
     expect(wynik.raty.at(-1)?.rataGr).toBe(220_053);
     expect(wynik.raty.at(-1)?.saldoPoSplacieGr).toBe(0);
-    expect(sumaKapitaluIZasad(wynik)).toBe(30_000_000);
+    expect(sumaKapitaluINadplat(wynik)).toBe(30_000_000);
   });
 
   it('brak trybu traktuje jak skrocenie okresu', () => {

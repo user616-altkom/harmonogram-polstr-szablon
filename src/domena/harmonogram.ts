@@ -103,12 +103,13 @@ function policzRatyMalejace(parametry: ParametryKredytu): Harmonogram {
     saldoGr = Math.max(0, saldoGr - czescKapitalowaGr);
     const nadplaty = znajdzNadplaty(parametry.nadplaty, numer);
     let nadplataGr = 0;
-    let obnizRate = false;
     for (const nadplata of nadplaty) {
       const zastosowanaKwotaGr = Math.min(nadplata.kwotaGr, saldoGr);
       saldoGr = Math.max(0, saldoGr - zastosowanaKwotaGr);
       nadplataGr += zastosowanaKwotaGr;
-      obnizRate ||= nadplata.tryb === 'obnizRate';
+      if (nadplata.tryb === 'obnizRate' && saldoGr > 0) {
+        czescKapitalowaBazowaGr = Math.round(saldoGr / (parametry.liczbaRat - numer));
+      }
     }
     sumaOdsetekGr += odsetkiGr;
 
@@ -121,10 +122,6 @@ function policzRatyMalejace(parametry: ParametryKredytu): Harmonogram {
       saldoPoSplacieGr: saldoGr,
       ...(nadplataGr > 0 ? { nadplataGr } : {}),
     });
-
-    if (obnizRate && saldoGr > 0) {
-      czescKapitalowaBazowaGr = Math.round(saldoGr / (parametry.liczbaRat - numer));
-    }
 
     if (saldoGr === 0) break;
   }
