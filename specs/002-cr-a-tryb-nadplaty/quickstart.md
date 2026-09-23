@@ -32,3 +32,11 @@ W obu wariantach sprawdź saldo końcowe 0 oraz równość kwoty kredytu i sumy 
 Powtórz scenariusz z wpisem nadpłaty bez trybu. Wynik powinien odpowiadać `skrocOkres`.
 
 Sprawdź także dwie nadpłaty w tym samym miesiącu. Powinny zostać zastosowane kolejno w kolejności wejścia.
+
+Przykład dwóch nadpłat po pierwszej racie:
+
+```text
+1:200000:skrocOkres,1:100000:obnizRate
+```
+
+Pierwsza nadpłata zmniejsza saldo bez zmiany raty, druga działa na już zmniejszonym saldzie i powoduje przeliczenie kolejnych rat.

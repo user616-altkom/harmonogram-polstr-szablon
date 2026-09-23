@@ -16,7 +16,7 @@ export interface ParametryKredytu {
 export interface Nadplata {
   miesiac: number;
   kwotaGr: number;
-  tryb: 'obnizRate' | 'skrocOkres';
+  tryb?: 'obnizRate' | 'skrocOkres';
 }
 
 export interface Rata {
@@ -101,9 +101,15 @@ function policzRatyMalejace(parametry: ParametryKredytu): Harmonogram {
       : Math.min(czescKapitalowaBazowaGr, saldoGr);
     const rataGr = czescKapitalowaGr + odsetkiGr;
     saldoGr = Math.max(0, saldoGr - czescKapitalowaGr);
-    const nadplata = znajdzNadplate(parametry.nadplaty, numer);
-    const nadplataGr = Math.min(nadplata?.kwotaGr ?? 0, saldoGr);
-    saldoGr = Math.max(0, saldoGr - nadplataGr);
+    const nadplaty = znajdzNadplaty(parametry.nadplaty, numer);
+    let nadplataGr = 0;
+    let obnizRate = false;
+    for (const nadplata of nadplaty) {
+      const zastosowanaKwotaGr = Math.min(nadplata.kwotaGr, saldoGr);
+      saldoGr = Math.max(0, saldoGr - zastosowanaKwotaGr);
+      nadplataGr += zastosowanaKwotaGr;
+      obnizRate ||= nadplata.tryb === 'obnizRate';
+    }
     sumaOdsetekGr += odsetkiGr;
 
     raty.push({
@@ -116,7 +122,7 @@ function policzRatyMalejace(parametry: ParametryKredytu): Harmonogram {
       ...(nadplataGr > 0 ? { nadplataGr } : {}),
     });
 
-    if (nadplata?.tryb === 'obnizRate' && saldoGr > 0) {
+    if (obnizRate && saldoGr > 0) {
       czescKapitalowaBazowaGr = Math.round(saldoGr / (parametry.liczbaRat - numer));
     }
 
@@ -138,7 +144,7 @@ function policzRatyRowne(parametry: ParametryKredytu): Harmonogram {
     const stawkaRoczna = pobierzStawkeBazowa(parametry.wskaznik, data) + parametry.marza;
     const stawkaMiesieczna = stawkaRoczna / 12;
     const liczbaPozostalychRat = parametry.liczbaRat - numer + 1;
-    const nadplata = znajdzNadplate(parametry.nadplaty, numer);
+    const nadplaty = znajdzNadplaty(parametry.nadplaty, numer);
     const stawkaZmienilaSie = poprzedniaStawkaRoczna !== undefined && poprzedniaStawkaRoczna !== stawkaRoczna;
 
     if (rataBiezacaGr === undefined || stawkaZmienilaSie) {
@@ -149,8 +155,14 @@ function policzRatyRowne(parametry: ParametryKredytu): Harmonogram {
     const rataDoZaplatyGr = Math.min(rataBiezacaGr, saldoGr + odsetkiGr);
     const czescKapitalowaGr = Math.min(rataDoZaplatyGr - odsetkiGr, saldoGr);
     saldoGr = Math.max(0, saldoGr - czescKapitalowaGr);
-    const nadplataGr = Math.min(nadplata?.kwotaGr ?? 0, saldoGr);
-    saldoGr = Math.max(0, saldoGr - nadplataGr);
+    let nadplataGr = 0;
+    let obnizRate = false;
+    for (const nadplata of nadplaty) {
+      const zastosowanaKwotaGr = Math.min(nadplata.kwotaGr, saldoGr);
+      saldoGr = Math.max(0, saldoGr - zastosowanaKwotaGr);
+      nadplataGr += zastosowanaKwotaGr;
+      obnizRate ||= nadplata.tryb === 'obnizRate';
+    }
     sumaOdsetekGr += odsetkiGr;
 
     raty.push({
@@ -163,7 +175,7 @@ function policzRatyRowne(parametry: ParametryKredytu): Harmonogram {
       ...(nadplataGr > 0 ? { nadplataGr } : {}),
     });
 
-    if (nadplata?.tryb === 'obnizRate') rataBiezacaGr = undefined;
+    if (obnizRate) rataBiezacaGr = undefined;
     poprzedniaStawkaRoczna = stawkaRoczna;
     if (saldoGr === 0) break;
   }
@@ -180,8 +192,10 @@ function policzRataRowna(saldoGr: number, stawkaMiesieczna: number, liczbaRat: n
   );
 }
 
-function znajdzNadplate(nadplaty: Nadplata[] | undefined, numerRaty: number): Nadplata | undefined {
-  return nadplaty?.find((nadplata) => nadplata.miesiac === numerRaty);
+function znajdzNadplaty(nadplaty: Nadplata[] | undefined, numerRaty: number): Nadplata[] {
+  return (nadplaty ?? [])
+    .filter((nadplata) => nadplata.miesiac === numerRaty)
+    .map((nadplata) => ({ ...nadplata, tryb: nadplata.tryb ?? 'skrocOkres' }));
 }
 
 export function policzHarmonogram(parametry: ParametryKredytu): Harmonogram {
@@ -203,6 +217,9 @@ export function policzHarmonogram(parametry: ParametryKredytu): Harmonogram {
     }
     if (!Number.isInteger(nadplata.kwotaGr) || nadplata.kwotaGr <= 0) {
       throw new Error('kwota nadplaty musi być dodatnią liczbą całkowitą w groszach');
+    }
+    if (nadplata.tryb !== undefined && nadplata.tryb !== 'obnizRate' && nadplata.tryb !== 'skrocOkres') {
+      throw new Error('tryb nadplaty musi być równy obnizRate albo skrocOkres');
     }
   }
 

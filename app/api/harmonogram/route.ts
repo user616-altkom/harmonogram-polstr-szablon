@@ -12,10 +12,19 @@ function parsujNadplaty(wartosc: string | null): Nadplata[] | string {
 
   const nadplaty: Nadplata[] = [];
   for (const fragment of wartosc.split(',')) {
-    const [miesiacTekst, kwotaTekst, trybTekst] = fragment.split(':');
+    const czesci = fragment.split(':');
+    if (czesci.length < 2 || czesci.length > 3) {
+      return 'nadplaty: lista w formacie miesiac:kwota:obnizRate albo miesiac:kwota:skrocOkres';
+    }
+
+    const [miesiacTekst, kwotaTekst, trybTekst] = czesci;
     const miesiac = Number(miesiacTekst);
     const kwotaGr = Number(kwotaTekst);
-    const tryb = trybTekst === 'obnizRate' || trybTekst === 'rata' ? 'obnizRate' : trybTekst === 'skrocOkres' || trybTekst === 'okres' ? 'skrocOkres' : null;
+    const tryb = trybTekst === undefined || trybTekst === 'skrocOkres' || trybTekst === 'okres'
+      ? 'skrocOkres'
+      : trybTekst === 'obnizRate' || trybTekst === 'rata'
+        ? 'obnizRate'
+        : null;
 
     if (!Number.isInteger(miesiac) || miesiac <= 0 || !Number.isInteger(kwotaGr) || kwotaGr <= 0 || tryb === null) {
       return 'nadplaty: lista w formacie miesiac:kwota:obnizRate albo miesiac:kwota:skrocOkres';
