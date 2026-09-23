@@ -78,12 +78,20 @@ function formatujDate(date: Date): string {
 
 function pobierzStawkeBazowa(wskaznik: ParametryKredytu['wskaznik'], data: string): number {
   const serie = seriaWskaznika(wskaznik);
+  if (serie.length === 0) {
+    throw new Error(`brak stawki wskaźnika ${wskaznik} dla daty ${data}`);
+  }
+
   const wpisObowiazujacy = serie.reduce<typeof serie[number] | undefined>((wybrany, wpis) => {
     if (wpis.od > data || (wybrany && wpis.od < wybrany.od)) return wybrany;
     return wpis;
   }, undefined);
 
-  return wpisObowiazujacy?.stopa ?? serie[0]?.stopa ?? 0;
+  if (!wpisObowiazujacy) {
+    throw new Error(`brak stawki wskaźnika ${wskaznik} dla daty ${data}`);
+  }
+
+  return wpisObowiazujacy.stopa;
 }
 
 function policzRatyMalejace(parametry: ParametryKredytu): Harmonogram {
@@ -146,7 +154,9 @@ function policzRatyRowne(parametry: ParametryKredytu): Harmonogram {
     }
 
     const odsetkiGr = Math.round(saldoGr * stawkaMiesieczna);
-    const rataDoZaplatyGr = Math.min(rataBiezacaGr, saldoGr + odsetkiGr);
+    const rataDoZaplatyGr = numer === parametry.liczbaRat
+      ? saldoGr + odsetkiGr
+      : rataBiezacaGr;
     const czescKapitalowaGr = Math.min(rataDoZaplatyGr - odsetkiGr, saldoGr);
     saldoGr = Math.max(0, saldoGr - czescKapitalowaGr);
     const nadplataGr = Math.min(nadplata?.kwotaGr ?? 0, saldoGr);
