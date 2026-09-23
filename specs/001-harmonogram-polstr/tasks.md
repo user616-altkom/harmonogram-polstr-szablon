@@ -93,11 +93,11 @@
 
 ### Implementacja dla User Story 3
 
-- [ ] T021 [US3] Zamień placeholder w `app/page.tsx` na eksportowany komponent React z Claude Design, zachowując `'use client'` w pierwszej linii
-- [ ] T022 [US3] Zaimplementuj stan formularza i logikę pobierania danych w `app/page.tsx` z użyciem `fetch('/api/harmonogram?...')`
-- [ ] T023 [US3] Wyświetl ratę pierwszą i ostatnią, sumę odsetek oraz tabelę rat w `app/page.tsx`
-- [ ] T024 [US3] Zaimplementuj przycisk eksportu CSV w `app/page.tsx` bez dodawania nowych zależności
-- [ ] T025 [US3] Zweryfikuj, że strona jest podłączona do route handlra i że UI pozostaje cienkie, bez logiki biznesowej w komponencie
+- [x] T021 [US3] Zamień placeholder w `app/page.tsx` na eksportowany komponent React z Claude Design, zachowując `'use client'` w pierwszej linii
+- [x] T022 [US3] Zaimplementuj stan formularza i logikę pobierania danych w `app/page.tsx` z użyciem `fetch('/api/harmonogram?...')`
+- [x] T023 [US3] Wyświetl ratę pierwszą i ostatnią, sumę odsetek oraz tabelę rat w `app/page.tsx`
+- [x] T024 [US3] Zaimplementuj przycisk eksportu CSV w `app/page.tsx` bez dodawania nowych zależności
+- [x] T025 [US3] Zweryfikuj, że strona jest podłączona do route handlra i że UI pozostaje cienkie, bez logiki biznesowej w komponencie
 
 **Punkt kontrolny**: Wszystkie historie użytkownika powinny być teraz niezależnie funkcjonalne.
 
@@ -107,10 +107,10 @@
 
 **Cel**: Poprawki wpływające na wszystkie historie użytkownika, przed finalną walidacją i merge.
 
-- [ ] T026 [P] Sprawdź kontrakt odpowiedzi API i upewnij się, że odpowiada tabeli oczekiwanej przez UI w `app/api/harmonogram/route.ts`
-- [ ] T027 [P] Uruchom walidację z `quickstart.md`, w tym `npm test`, `npm run typecheck` i `npm run build`
-- [ ] T028 Wyczyść nazewnictwo, komentarze i dokumentację w `src/domena/harmonogram.ts`, `src/dane/wskazniki.ts`, `app/api/harmonogram/route.ts` i `app/page.tsx`
-- [ ] T029 [P] Potwierdź, że wartość biznesowa z BRIEF jest zachowana z tolerancją ±0,05 zł w finalnym wyniku
+- [x] T026 [P] Sprawdź kontrakt odpowiedzi API i upewnij się, że odpowiada tabeli oczekiwanej przez UI w `app/api/harmonogram/route.ts`
+- [x] T027 [P] Uruchom walidację z `quickstart.md`, w tym `npm test`, `npm run typecheck` i `npm run build`
+- [x] T028 Wyczyść nazewnictwo, komentarze i dokumentację w `src/domena/harmonogram.ts`, `src/dane/wskazniki.ts`, `app/api/harmonogram/route.ts` i `app/page.tsx`
+- [x] T029 [P] Potwierdź, że wartość biznesowa z BRIEF jest zachowana z tolerancją ±0,05 zł w finalnym wyniku
 - [ ] T030 [P] Zweryfikuj poprawność GitHub Actions, podglądu Vercel i instrukcji PR przed merge do `main`
 
 ---

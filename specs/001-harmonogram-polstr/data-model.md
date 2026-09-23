@@ -76,12 +76,26 @@ export interface Nadplata {
   tryb: 'obnizRate' | 'skrocOkres';
 }
 
+export interface ApiRata {
+  nr: number;
+  data: string;
+  kapital: number;
+  odsetki: number;
+  rata: number;
+  saldo: number;
+  nadplata?: number;
+}
+
 export interface ApiHarmonogramResponse {
-  raty: Rata[];
-  sumaOdsetekGr: number;
+  raty: ApiRata[];
+  rataPierwsza: number;
+  rataOstatnia: number;
+  sumaOdsetek: number;
   blad?: string;
 }
 ```
+
+Pola pieniężne odpowiedzi API są wyrażone w złotych jako liczby dziesiętne, ponieważ ten kontrakt jest bezpośrednio konsumowany przez ekran. Wejściowa kwota `kwota` jest podawana w złotych, natomiast drugi składnik każdego fragmentu `nadplaty` jest całkowitą liczbą groszy, np. `1:200000:obnizRate`.
 
 ## Ekran
 

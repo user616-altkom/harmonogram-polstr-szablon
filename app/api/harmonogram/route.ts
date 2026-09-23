@@ -2,8 +2,7 @@ import { NextResponse } from 'next/server';
 import { policzHarmonogram, type Nadplata, type ParametryKredytu } from '../../../src/domena/harmonogram';
 
 // Route handler jest cienki: parsuje parametry z query string, woła domenę, zwraca JSON.
-// Żadnych obliczeń finansowych w tym pliku. Przeliczenie jednostek wejścia
-// (złote na grosze, punkty procentowe na ułamek) to część parsowania kontraktu API.
+// Kwota kredytu i pola odpowiedzi są w złotych; nadpłaty w query używają groszy.
 
 const PRZYKLAD =
   '/api/harmonogram?kwota=400000&liczbaRat=300&marza=2.11&wskaznik=POLSTR_1M&typRat=rowne&pierwszaRata=2026-10-01';
