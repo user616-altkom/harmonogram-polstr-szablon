@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { policzHarmonogram, type ParametryKredytu } from '../../../src/domena/harmonogram';
+import { policzHarmonogram, type Nadplata, type ParametryKredytu } from '../../../src/domena/harmonogram';
 
 // Route handler jest cienki: parsuje parametry z query string, woła domenę, zwraca JSON.
 // Żadnych obliczeń finansowych w tym pliku. Przeliczenie jednostek wejścia
@@ -8,6 +8,26 @@ import { policzHarmonogram, type ParametryKredytu } from '../../../src/domena/ha
 const PRZYKLAD =
   '/api/harmonogram?kwota=400000&liczbaRat=300&marza=2.11&wskaznik=POLSTR_1M&typRat=rowne&pierwszaRata=2026-10-01';
 
+function parsujNadplaty(wartosc: string | null): Nadplata[] | string {
+  if (!wartosc) return [];
+
+  const nadplaty: Nadplata[] = [];
+  for (const fragment of wartosc.split(',')) {
+    const [miesiacTekst, kwotaTekst, trybTekst] = fragment.split(':');
+    const miesiac = Number(miesiacTekst);
+    const kwotaGr = Number(kwotaTekst);
+    const tryb = trybTekst === 'obnizRate' || trybTekst === 'rata' ? 'obnizRate' : trybTekst === 'skrocOkres' || trybTekst === 'okres' ? 'skrocOkres' : null;
+
+    if (!Number.isInteger(miesiac) || miesiac <= 0 || !Number.isInteger(kwotaGr) || kwotaGr <= 0 || tryb === null) {
+      return 'nadplaty: lista w formacie miesiac:kwota:obnizRate albo miesiac:kwota:skrocOkres';
+    }
+
+    nadplaty.push({ miesiac, kwotaGr, tryb });
+  }
+
+  return nadplaty;
+}
+
 function parsujParametry(szukane: URLSearchParams): ParametryKredytu | string {
   const kwota = Number(szukane.get('kwota'));
   const liczbaRat = Number(szukane.get('liczbaRat'));
@@ -15,6 +35,7 @@ function parsujParametry(szukane: URLSearchParams): ParametryKredytu | string {
   const wskaznik = szukane.get('wskaznik');
   const typRat = szukane.get('typRat');
   const pierwszaRata = szukane.get('pierwszaRata') ?? '';
+  const nadplaty = parsujNadplaty(szukane.get('nadplaty'));
 
   if (!Number.isFinite(kwota) || kwota <= 0) return 'kwota: liczba dodatnia w złotych, np. 400000';
   if (!Number.isInteger(liczbaRat) || liczbaRat <= 0) return 'liczbaRat: liczba całkowita dodatnia, np. 300';
@@ -22,6 +43,7 @@ function parsujParametry(szukane: URLSearchParams): ParametryKredytu | string {
   if (wskaznik !== 'POLSTR_1M' && wskaznik !== 'WIBOR_3M') return 'wskaznik: POLSTR_1M albo WIBOR_3M';
   if (typRat !== 'rowne' && typRat !== 'malejace') return 'typRat: rowne albo malejace';
   if (!/^\d{4}-\d{2}-\d{2}$/.test(pierwszaRata)) return 'pierwszaRata: data YYYY-MM-DD';
+  if (typeof nadplaty === 'string') return nadplaty;
 
   return {
     kwotaGr: Math.round(kwota * 100),
@@ -30,6 +52,7 @@ function parsujParametry(szukane: URLSearchParams): ParametryKredytu | string {
     wskaznik,
     typRat,
     pierwszaRata,
+    nadplaty,
   };
 }
 
@@ -48,6 +71,7 @@ export function GET(request: Request) {
       odsetki: rata.odsetkiGr / 100,
       rata: rata.rataGr / 100,
       saldo: rata.saldoPoSplacieGr / 100,
+      nadplata: rata.nadplataGr === undefined ? undefined : rata.nadplataGr / 100,
     }));
 
     return NextResponse.json({
@@ -55,7 +79,6 @@ export function GET(request: Request) {
       rataPierwsza: raty[0]?.rata ?? 0,
       rataOstatnia: raty[raty.length - 1]?.rata ?? 0,
       sumaOdsetek: harmonogram.sumaOdsetekGr / 100,
-      oprocentowanie: ((parametry.marza + (parametry.wskaznik === 'POLSTR_1M' ? 0.0355 : 0.0399)) * 100),
     });
   } catch (blad) {
     const komunikat = blad instanceof Error ? blad.message : String(blad);

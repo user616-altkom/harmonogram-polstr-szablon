@@ -144,7 +144,10 @@ export default function Page() {
     });
 
     if (nadplaty.length) {
-      q.set('nadplaty', nadplaty.map((n) => `${n.miesiac}:${toNum(n.kwota)}:${n.tryb}`).join(','));
+      q.set(
+        'nadplaty',
+        nadplaty.map((n) => `${n.miesiac}:${Math.round(Number(toNum(n.kwota)) * 100)}:${n.tryb}`).join(','),
+      );
     }
 
     try {
