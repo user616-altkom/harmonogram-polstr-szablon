@@ -111,7 +111,7 @@
 - [x] T027 [P] Uruchom walidację z `quickstart.md`, w tym `npm test`, `npm run typecheck` i `npm run build`
 - [x] T028 Wyczyść nazewnictwo, komentarze i dokumentację w `src/domena/harmonogram.ts`, `src/dane/wskazniki.ts`, `app/api/harmonogram/route.ts` i `app/page.tsx`
 - [x] T029 [P] Potwierdź, że wartość biznesowa z BRIEF jest zachowana z tolerancją ±0,05 zł w finalnym wyniku
-- [ ] T030 [P] Zweryfikuj poprawność GitHub Actions, podglądu Vercel i instrukcji PR przed merge do `main`
+- [x] T030 [P] Zweryfikuj poprawność GitHub Actions, podglądu Vercel i instrukcji PR przed merge do `main`
 
 ---
 
