@@ -144,3 +144,11 @@ Faza 2 → US1 → US2 → US3 → Dopracowanie
 2. Następnie US3: porównanie wariantów, API i UI.
 3. Na końcu dopracowanie: dokumentacja, pełna walidacja i przygotowanie do PR.
 4. Każdą zmianę logiki finansowej wykonuj w kolejności test-first: czerwony test, najmniejsza poprawka, zielona regresja.
+
+## Faza 7: Convergence
+
+- [x] T029 Dodaj brakujący test kontraktu parsera `nadplaty` w dozwolonym katalogu `tests/`, obejmujący wpis bez trybu, jawne tryby, wiele wpisów w tym samym miesiącu oraz odrzucenie niepoprawnego trybu, zgodnie z `FR-003`, `FR-015` i kontraktem `specs/002-cr-a-tryb-nadplaty/contracts/harmonogram-cr-a.md` (missing).
+
+## Faza 8: Convergence
+
+- [x] T030 Usuń naruszenie granicy testów wynikające z importowania `app/api/harmonogram/route.ts` w `tests/harmonogram-api.test.ts`; przenieś sprawdzane zachowanie do dozwolonego testu domeny/danych albo uzasadnij i formalnie zmień właściwą zasadę projektu przed dalszą implementacją per Konstytucja IV (contradicts, CRITICAL).
