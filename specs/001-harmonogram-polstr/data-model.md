@@ -37,22 +37,23 @@ export interface WpisSerii {
 export interface Rata {
   numer: number;
   data: string;
-  czescKapitalowa: number;
-  czescOprocentowana: number;
-  rata: number;
-  saldoPoSplacie: number;
+  czescKapitalowaGr: number;
+  odsetkiGr: number;
+  rataGr: number;
+  saldoPoSplacieGr: number;
 }
 
 export interface Harmonogram {
   raty: Rata[];
-  sumaOdsetek: number;
+  sumaOdsetekGr: number;
 }
 ```
 
 **Zasada**:
 
-- `sumaOdsetek` jest sumą odsetek z całego okresu.
+- `sumaOdsetekGr` jest sumą odsetek z całego okresu wyrażoną w groszach.
 - `raty` ma pełną tabelę wynikową używaną przez API i ekran.
+- Wszystkie pola pieniężne przechowujemy w groszach jako liczby całkowite.
 
 ## Kontrakt API
 
@@ -64,13 +65,20 @@ Route handler `app/api/harmonogram/route.ts` przyjmuje parametry w query string:
 - `wskaznik`
 - `typRat`
 - `pierwszaRata`
+- `nadplaty` (opcjonalnie, serializowane jako lista obiektów z `miesiac`, `kwotaGr`, `tryb`)
 
 Route zwraca JSON z następującym typem:
 
 ```ts
+export interface Nadplata {
+  miesiac: number;
+  kwotaGr: number;
+  tryb: 'obnizRate' | 'skrocOkres';
+}
+
 export interface ApiHarmonogramResponse {
   raty: Rata[];
-  sumaOdsetek: number;
+  sumaOdsetekGr: number;
   blad?: string;
 }
 ```

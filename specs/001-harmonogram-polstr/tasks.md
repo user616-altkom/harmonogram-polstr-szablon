@@ -1,194 +1,191 @@
-# Tasks: Harmonogram POLSTR
+# Zadania: Harmonogram POLSTR
 
-**Input**: Design documents from `/specs/001-harmonogram-polstr/`
+**Wejście**: Dokumenty projektowe z `/specs/001-harmonogram-polstr/`
 
-**Prerequisites**: plan.md (required), spec.md (required for user stories), research.md, data-model.md, quickstart.md
+**Wymagania wstępne**: plan.md (wymagany), spec.md (wymagany dla historii użytkownika), research.md, data-model.md, quickstart.md
 
-**Tests**: The examples below include test tasks. In this feature, tests are explicitly required for the domain logic and the control-number business case.
+**Testy**: W tej funkcji testy są wymagane dla logiki domeny i przypadku biznesowego liczby kontrolnej.
 
-**Organization**: Tasks are grouped by user story to allow independent implementation and testing of each story.
+**Organizacja**: Zadania są pogrupowane według historii użytkownika, aby można było je implementować i testować niezależnie.
 
-## Format: `[ID] [P?] [Story] Description`
+## Format: `[ID] [P?] [Story] Opis`
 
-- **[P]**: Can run in parallel (different files, no dependencies)
-- **[Story]**: Which user story this task belongs to (e.g., US1, US2, US3)
-- Include exact file paths in descriptions
+- **[P]**: Można uruchomić równolegle (inne pliki, brak zależności)
+- **[Story]**: Do której historii użytkownika należy zadanie (np. US1, US2, US3)
+- W opisie należy podawać dokładne ścieżki plików
 
-## Phase 1: Setup (Shared Infrastructure)
+## Faza 1: Setup (Wspólna infrastruktura)
 
-**Purpose**: Repo already contains the working project skeleton; no setup work is required for this feature.
+**Cel**: Repo zawiera już działający szkielet projektu; nie ma zadań setupu dla tej funkcji.
 
 - Brak zadań w tej fazie. Szkielet projektu i konfiguracja Next.js/Vitest/Tailwind są już obecne.
 
 ---
 
-## Phase 2: Foundational (Blocking Prerequisites)
+## Faza 2: Foundational (Warunki wstępne)
 
-**Purpose**: Core infrastructure that MUST be complete before user story work can begin.
+**Cel**: Podstawowa infrastruktura, która MUSI być kompletna przed rozpoczęciem prac nad historiami użytkownika.
 
-- [ ] T001 [P] Review and confirm the domain/data/API/UI boundaries across `src/domena/harmonogram.ts`, `src/dane/wskazniki.ts`, `app/api/harmonogram/route.ts` and `app/page.tsx`
-- [ ] T002 [P] Define the canonical data contract for the schedule output in `src/domena/harmonogram.ts` and align it with the API response contract
-- [ ] T003 [P] Define the rounding policy and cash-unit policy in `src/domena/harmonogram.ts` so amounts stay in grosz and rounding occurs in one place
-- [ ] T004 Create the domain entry type for the credit parameters and the harmonogram result interface in `src/domena/harmonogram.ts`
-- [ ] T005 Add the `seriaWskaznika` usage contract and verification notes in `src/dane/wskazniki.ts` to ensure JSON data is consumed through the data layer only
-- [ ] T006 Validate the API contract in `app/api/harmonogram/route.ts` so query parameters are parsed and mapped to domain inputs without business logic in the route
+- [ ] T001 [P] Zweryfikuj i potwierdź granice domeny, danych, API i UI w `src/domena/harmonogram.ts`, `src/dane/wskazniki.ts`, `app/api/harmonogram/route.ts` i `app/page.tsx`
+- [ ] T002 [P] Zdefiniuj kontrakt danych harmonogramu w `src/domena/harmonogram.ts` i dopasuj go do kontraktu odpowiedzi API
+- [ ] T003 [P] Zdefiniuj politykę zaokrągleń i jednostki pieniężnej w `src/domena/harmonogram.ts`, aby kwoty były przechowywane w groszach i zaokrąglane w jednym miejscu
+- [ ] T004 Utwórz typ wejściowy dla parametrów kredytu i interfejs wyniku harmonogramu w `src/domena/harmonogram.ts`
+- [ ] T005 Dodaj kontrakt użycia `seriaWskaznika` i notatki walidacyjne w `src/dane/wskazniki.ts`, aby dane JSON były pobierane wyłącznie przez warstwę danych
+- [ ] T006 Zweryfikuj kontrakt API w `app/api/harmonogram/route.ts`, tak aby query params były parsowane i mapowane do wejścia domenowego bez logiki biznesowej w routingu
 
-**Checkpoint**: Foundation ready - user story implementation can now begin in parallel.
-
----
-
-## Phase 3: User Story 1 - Rata równa przy stałej stopie (Priority: P1) 🎯 MVP
-
-**Goal**: Obliczyć poprawny harmonogram dla rat równych przy stałej stopie i potwierdzić liczbę kontrolną z BRIEF.
-
-**Independent Test**: Dla kwoty 400 000 zł, 300 rat, stopy 5,66 % rocznie i stałego wskaźnika POLSTR 1M 3,55 % + marża 2,11 pp, rata równa musi wynosić 2 494,72 zł ±0,05 zł.
-
-### Tests for User Story 1 (REQUIRED)
-
-> NOTE: Tests MUST be written first and should fail before implementation.
-
-- [ ] T007 [P] [US1] Add the equal-installment control-number test in `tests/harmonogram-rowne-raty.test.ts` for the BRIEF example and expected monthly payment of 2 494,72 zł
-- [ ] T008 [P] [US1] Add the final-adjustment validation test in `tests/harmonogram-rowne-raty.test.ts` to confirm the sum of principal parts equals the loan amount after rounding
-
-### Implementation for User Story 1
-
-- [ ] T009 [US1] Implement the pure calculation for equal installments in `src/domena/harmonogram.ts` using the annual-rate and monthly-period convention from the brief
-- [ ] T010 [US1] Implement the final payment adjustment logic in `src/domena/harmonogram.ts` so the last installment balances the total principal exactly
-- [ ] T011 [US1] Add the schedule result model and per-installment rows in `src/domena/harmonogram.ts` with fields for: number, date, principal, interest, total payment, and remaining balance
-- [ ] T012 [US1] Expose the result through the domain entry function so API and tests use the same output structure
-- [ ] T013 [US1] Verify the same domain function from `app/api/harmonogram/route.ts` for a valid `rowne` request and return JSON instead of a 501 response
-
-**Checkpoint**: At this point, User Story 1 should be fully functional and testable independently.
+**Punkt kontrolny**: Podstawa gotowa - prace nad historiami użytkownika mogą się rozpocząć.
 
 ---
 
-## Phase 4: User Story 2 - Zmienne wskaźniki i nadpłaty (Priority: P2)
+## Faza 3: User Story 1 - Rata równa przy stałej stopie (Priority: P1) 🎯 MVP
 
-**Goal**: Dodać obsługę wskaźników POLSTR 1M i WIBOR 3M, zmiany stóp w trakcie spłaty oraz nadpłat w trybie obniż raty i skrócenia okresu.
+**Cel**: Obliczyć poprawny harmonogram dla rat równych przy stałej stopie i potwierdzić liczbę kontrolną z BRIEF.
 
-**Independent Test**: Dla zmienionej serii wskaźnika albo nadpłaty w trybie `obnizRate`/`skrocOkres`, harmonogram musi odzwierciedlać nowe saldo i ratę bez naruszenia reguły wyrównania końcowego.
+**Test niezależny**: Dla kwoty 400 000 zł, 300 rat, stopy 5,66 % rocznie i stałej serii wskaźnika `[{ od: '2026-01-01', stopa: 0.0355 }]`, rata równa musi wynosić 2 494,72 zł ±0,05 zł.
 
-### Tests for User Story 2 (REQUIRED)
+### Testy dla User Story 1 (WYMAGANE)
 
-- [ ] T014 [P] [US2] Add a test for a periodic rate change in `tests/harmonogram-zmiana-wskaznika.test.ts` covering POLSTR/WIBOR transitions and stale final value behavior
-- [ ] T015 [P] [US2] Add a test for overpayments in `tests/harmonogram-nadplaty.test.ts` covering both `obnizRate` and `skrocOkres`
+> Uwaga: testy MUSZĄ zostać napisane najpierw i powinny failować przed implementacją.
 
-### Implementation for User Story 2
+- [ ] T007 [US1] Dodaj test liczby kontrolnej dla rat równych w `tests/harmonogram-rowne-raty.test.ts` na podstawie przykładu z BRIEF i oczekiwanej raty 2 494,72 zł
+- [ ] T008 [US1] Dodaj test walidacji końcowego wyrównania w `tests/harmonogram-rowne-raty.test.ts`, aby sprawdzić, że suma części kapitałowych jest równa kwocie kredytu po zaokrągleniach
 
-- [ ] T016 [P] [US2] Implement the rate-selection logic in `src/domena/harmonogram.ts` using the period-specific series from `src/dane/wskazniki.ts`
-- [ ] T017 [US2] Add the logic for the next valid rate selection and last-known-rate fallback in `src/domena/harmonogram.ts`
-- [ ] T018 [US2] Implement the `malejace` schedule calculation in `src/domena/harmonogram.ts` alongside the `rowne` logic
-- [ ] T019 [US2] Implement overpayment processing in `src/domena/harmonogram.ts` with both modes: `obnizRate` and `skrocOkres`
-- [ ] T020 [US2] Update the route handler contract in `app/api/harmonogram/route.ts` so all additional parameters are accepted and forwarded without leaking business logic into the route
+### Implementacja dla User Story 1
 
-**Checkpoint**: At this point, User Stories 1 AND 2 should both work independently.
+- [ ] T009 [US1] Zaimplementuj czystą kalkulację rat równych w `src/domena/harmonogram.ts` zgodnie z konwencją stopy rocznej i okresu miesięcznego z briefu
+- [ ] T010 [US1] Zaimplementuj logikę wyrównania ostatniej raty w `src/domena/harmonogram.ts`, aby ostatnia rata dopłacała lub korygowała saldo końcowe
+- [ ] T011 [US1] Dodaj model wyniku harmonogramu i wiersze rat w `src/domena/harmonogram.ts` z polami: numer, data, część kapitałowa, odsetki, rata i saldo końcowe
+- [ ] T012 [US1] Udostępnij wynik przez funkcję wejściową domeny, aby API i testy używały tego samego kontraktu wynikowego
+- [ ] T013 [US1] Zweryfikuj tę samą funkcję domenową z `app/api/harmonogram/route.ts` dla poprawnego żądania `rowne` i zwróć JSON zamiast 501
 
----
-
-## Phase 5: User Story 3 - Ekran www podłączony do API (Priority: P3)
-
-**Goal**: Dostarczyć ostatnią historię użytkownika: ekran kalkulatora z formularzem, pobieraniem danych z `/api/harmonogram` i eksportem CSV.
-
-**Independent Test**: Po wpisaniu parametrów kredytu i kliknięciu „Policz” komponent z `app/page.tsx` wyświetla wynik z API i pozwala na eksport CSV bez obliczeń w UI.
-
-### Tests for User Story 3 (OPTIONAL)
-
-- [ ] T021 [P] [US3] Add a smoke test for the browser-side contract in `tests/smoke.test.ts` to confirm the page renders and the API route is reachable
-
-### Implementation for User Story 3
-
-- [ ] T022 [P] [US3] Replace the placeholder content in `app/page.tsx` with the exported React component from Claude Design, keeping `'use client'` on the first line
-- [ ] T023 [US3] Implement the form state and fetch logic in `app/page.tsx` using `fetch('/api/harmonogram?...')` with query-string parameters
-- [ ] T024 [US3] Render the first and last installment, total interest, and the amortization table in `app/page.tsx`
-- [ ] T025 [US3] Implement the CSV export button in `app/page.tsx` without adding new dependencies
-- [ ] T026 [US3] Verify the page is connected to the route handler and the UI remains thin, with no business logic embedded in the component
-
-**Checkpoint**: All user stories should now be independently functional.
+**Punkt kontrolny**: W tej chwili User Story 1 jest w pełni funkcjonalny i testowalny niezależnie.
 
 ---
 
-## Phase 6: Polish & Cross-Cutting Concerns
+## Faza 4: User Story 2 - Zmienne wskaźniki i nadpłaty (Priority: P2)
 
-**Purpose**: Improvements affecting all user stories, before final validation and merge.
+**Cel**: Dodać obsługę wskaźników POLSTR 1M i WIBOR 3M, zmiany stóp w trakcie spłaty oraz nadpłat w trybie obniż raty i skrócenia okresu.
 
-- [ ] T027 [P] Review the API response shape and ensure it matches the table contract expected by the UI in `app/api/harmonogram/route.ts`
-- [ ] T028 [P] Run the end-to-end validation from `quickstart.md`, including `npm test`, `npm run typecheck` and `npm run build`
-- [ ] T029 Clean up naming, comments, and documentation in `src/domena/harmonogram.ts`, `src/dane/wskazniki.ts`, `app/api/harmonogram/route.ts` and `app/page.tsx`
-- [ ] T030 [P] Confirm the business acceptance value matches the BRIEF example and tolerance in the final output
+**Test niezależny**: Dla zmienionej serii wskaźnika albo nadpłaty w trybie `obnizRate`/`skrocOkres`, harmonogram musi odzwierciedlać nowe saldo i ratę bez naruszenia reguły wyrównania końcowego.
 
----
+### Testy dla User Story 2 (WYMAGANE)
 
-## Dependencies & Execution Order
+- [ ] T014 [P] [US2] Dodaj test dla zmiany okresowej stopy w `tests/harmonogram-zmiana-wskaznika.test.ts` obejmujący zmiany POLSTR/WIBOR i zachowanie dla ostatniej znanej wartości
+- [ ] T015 [P] [US2] Dodaj test dla nadpłat w `tests/harmonogram-nadplaty.test.ts` obejmujący oba tryby: `obnizRate` i `skrocOkres`
 
-### Phase Dependencies
+### Implementacja dla User Story 2
 
-- **Setup (Phase 1)**: No dependencies - already satisfied by the existing skeleton
-- **Foundational (Phase 2)**: Must be complete before any user story can start
-- **User Stories (Phase 3+)**: All depend on the foundational work; they can then be completed in priority order P1 → P2 → P3
-- **Polish (Final Phase)**: Depends on all desired user stories being complete
+- [ ] T016 [P] [US2] Zaimplementuj logikę wyboru wskaźnika w `src/domena/harmonogram.ts` na podstawie okresowych serii z `src/dane/wskazniki.ts`
+- [ ] T017 [US2] Dodaj logikę wyboru kolejnej poprawnej wartości wskaźnika i fallbacku do ostatniej znanej wartości w `src/domena/harmonogram.ts`
+- [ ] T018 [US2] Zaimplementuj obliczanie harmonogramu dla rat malejących w `src/domena/harmonogram.ts` obok logiki rat równych
+- [ ] T019 [US2] Zaimplementuj przetwarzanie nadpłat w `src/domena/harmonogram.ts` z dwoma trybami: `obnizRate` i `skrocOkres`
+- [ ] T020 [US2] Zaktualizuj kontrakt route handlra w `app/api/harmonogram/route.ts`, aby dodatkowe parametry były przyjmowane i przekazywane bez wprowadzania logiki biznesowej do routingu
 
-### User Story Dependencies
-
-- **User Story 1 (P1)**: Can start after Foundational completion and is the main MVP slice
-- **User Story 2 (P2)**: Builds on the same domain model but should remain independently testable
-- **User Story 3 (P3)**: Final UI integration that depends on the backend data contract and results
-
-### Parallel Opportunities
-
-- Foundational tasks T001–T006 can run in parallel because they touch distinct files and share only the common contract.
-- Tests within a story (`[US1]`, `[US2]`) can be written in parallel.
-- Different user stories can be implemented in parallel if the team has capacity.
+**Punkt kontrolny**: W tej chwili User Stories 1 i 2 powinny działać niezależnie.
 
 ---
 
-## Parallel Example: User Story 1
+## Faza 5: User Story 3 - Ekran www podłączony do API (Priority: P3)
+
+**Cel**: Dostarczyć ostatnią historię użytkownika: ekran kalkulatora z formularzem, pobieraniem danych z `/api/harmonogram` i eksportem CSV.
+
+**Test niezależny**: Nie dodajemy osobnych testów UI. Zamiast nich walidujemy, że komponent korzysta z API i nie zawiera logiki finansowej.
+
+### Implementacja dla User Story 3
+
+- [ ] T021 [US3] Zamień placeholder w `app/page.tsx` na eksportowany komponent React z Claude Design, zachowując `'use client'` w pierwszej linii
+- [ ] T022 [US3] Zaimplementuj stan formularza i logikę pobierania danych w `app/page.tsx` z użyciem `fetch('/api/harmonogram?...')`
+- [ ] T023 [US3] Wyświetl ratę pierwszą i ostatnią, sumę odsetek oraz tabelę rat w `app/page.tsx`
+- [ ] T024 [US3] Zaimplementuj przycisk eksportu CSV w `app/page.tsx` bez dodawania nowych zależności
+- [ ] T025 [US3] Zweryfikuj, że strona jest podłączona do route handlra i że UI pozostaje cienkie, bez logiki biznesowej w komponencie
+
+**Punkt kontrolny**: Wszystkie historie użytkownika powinny być teraz niezależnie funkcjonalne.
+
+---
+
+## Faza 6: Polish & Cross-Cutting Concerns
+
+**Cel**: Poprawki wpływające na wszystkie historie użytkownika, przed finalną walidacją i merge.
+
+- [ ] T026 [P] Sprawdź kontrakt odpowiedzi API i upewnij się, że odpowiada tabeli oczekiwanej przez UI w `app/api/harmonogram/route.ts`
+- [ ] T027 [P] Uruchom walidację z `quickstart.md`, w tym `npm test`, `npm run typecheck` i `npm run build`
+- [ ] T028 Wyczyść nazewnictwo, komentarze i dokumentację w `src/domena/harmonogram.ts`, `src/dane/wskazniki.ts`, `app/api/harmonogram/route.ts` i `app/page.tsx`
+- [ ] T029 [P] Potwierdź, że wartość biznesowa z BRIEF jest zachowana z tolerancją ±0,05 zł w finalnym wyniku
+- [ ] T030 [P] Zweryfikuj poprawność GitHub Actions, podglądu Vercel i instrukcji PR przed merge do `main`
+
+---
+
+## Zależności i kolejność wykonania
+
+### Zależności faz
+
+- **Setup (Phase 1)**: Brak zależności - już spełnione przez istniejący szkielet
+- **Foundational (Phase 2)**: Musi być kompletne przed rozpoczęciem jakiejkolwiek historii użytkownika
+- **User Stories (Phase 3+)**: Wszystkie zależą od pracy foundational; potem można je realizować w kolejności priorytetów P1 → P2 → P3
+- **Polish (Final Phase)**: Zależy od zakończenia wszystkich pożądanych historii użytkownika
+
+### Zależności historii użytkownika
+
+- **User Story 1 (P1)**: Może zacząć się po zakończeniu Foundational i jest głównym slice MVP
+- **User Story 2 (P2)**: Buduje na tym samym modelu domenowym, ale powinna pozostać niezależnie testowalna
+- **User Story 3 (P3)**: Integracja UI zależna od kontraktu backendu i wyników obliczeń
+
+### Możliwości równoległe
+
+- Zadania foundational T001–T006 można wykonywać równolegle, bo dotyczą różnych plików i mają wspólny kontrakt.
+- Testy w ramach historii (`[US1]`, `[US2]`) można pisać równolegle.
+- Równoległe rozwijanie historii użytkownika jest możliwe tylko po zakończeniu Foundational.
+
+---
+
+## Przykład równoległości: User Story 1
 
 ```bash
-# Write tests for the first story in parallel
-Task: "Add equal-installment control-number test in tests/harmonogram-rowne-raty.test.ts"
-Task: "Add final-adjustment validation test in tests/harmonogram-rowne-raty.test.ts"
+# Zapisz testy dla pierwszej historii równolegle
+Zadanie: "Dodaj test liczby kontrolnej dla rat równych w tests/harmonogram-rowne-raty.test.ts"
+Zadanie: "Dodaj test walidacji końcowego wyrównania w tests/harmonogram-rowne-raty.test.ts"
 
-# Implement domain work in parallel where independent
-Task: "Implement equal installments in src/domena/harmonogram.ts"
-Task: "Implement final payment adjustment in src/domena/harmonogram.ts"
+# Implementacja domeny może przebiegać równolegle, jeśli są niezależne
+Zadanie: "Zaimplementuj raty równe w src/domena/harmonogram.ts"
+Zadanie: "Zaimplementuj wyrównanie ostatniej raty w src/domena/harmonogram.ts"
 ```
 
 ---
 
-## Implementation Strategy
+## Strategia wdrożenia
 
-### MVP First (User Story 1 Only)
+### MVP najpierw (tylko User Story 1)
 
-1. Complete Phase 1: Setup (already satisfied)
-2. Complete Phase 2: Foundational
-3. Complete Phase 3: User Story 1
-4. Stop and validate the business control number before proceeding to richer scenarios
-5. Only then add User Story 2 and User Story 3
+1. Ukończ Faza 1: Setup (już spełnione)
+2. Ukończ Faza 2: Foundational
+3. Ukończ Faza 3: User Story 1
+4. Zatrzymaj się i zweryfikuj liczbę kontrolną przed przejściem do bogatszych scenariuszy
+5. Dopiero potem dodaj User Story 2 i User Story 3
 
-### Incremental Delivery
+### Dostarczanie przyrostowe
 
-1. Setup + Foundational → foundation ready
-2. Add User Story 1 → validate control number → deploy/demo if ready
-3. Add User Story 2 → validate rate change and overpayment behavior
-4. Add User Story 3 → validate UI integration and CSV export
+1. Setup + Foundational → fundament gotowy
+2. Dodaj User Story 1 → zweryfikuj kontrolną wartość → deploy/demo jeśli gotowe
+3. Dodaj User Story 2 → sprawdź zmianę stóp i nadpłaty
+4. Dodaj User Story 3 → sprawdź integrację UI i eksport CSV
 
-### Parallel Team Strategy
+### Strategia pracy równoległej
 
-With multiple developers:
+Przy wielu programistach:
 
-1. Team completes Setup + Foundational together
-2. Once Foundational is done:
+1. Zespół kończy Setup + Foundational wspólnie
+2. Po zakończeniu Foundational:
    - Developer A: User Story 1
    - Developer B: User Story 2
    - Developer C: User Story 3
-3. Stories complete and integrate independently
+3. Historie są kończone i integracyjne niezależnie
 
 ---
 
-## Notes
+## Uwagi
 
-- [P] tasks = different files, no dependencies
-- [Story] label maps a task to a specific user story for traceability
-- Each user story should remain independently completable and testable
-- The first implementation wave is User Story 1, because it is the acceptance-control requirement in BRIEF
-- Avoid vague tasks and cross-story coupling that breaks independence
+- [P] oznacza zadania na różnych plikach bez zależności
+- [Story] mapuje zadanie do konkretnej historii użytkownika dla śledzenia
+- Każda historia użytkownika powinna być niezależnie kompletna i testowalna
+- Pierwsza fala implementacji to User Story 1, ponieważ to wymóg akceptacyjny z BRIEF
+- Unikaj niejasnych zadań i zależności między historiami, które niszczą niezależność

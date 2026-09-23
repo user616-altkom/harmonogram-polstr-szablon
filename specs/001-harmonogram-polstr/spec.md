@@ -18,7 +18,7 @@ Doradca bankowy lub klient wprowadza kwotę kredytu, liczbę rat, datę pierwsze
 
 **Why this priority**: To jest podstawowa ścieżka użytkownika i kryterium akceptacji projektu. Bez poprawnego wyliczenia rat równych MVP nie dostarcza wartości biznesowej.
 
-**Independent Test**: Można przetestować samodzielnie na kwocie 400 000 zł, 300 rat, POLSTR 1M 3,55 % + marża 2,11 pp = 5,66 % rocznie, przy założeniu stałej stopy. Oczekiwany wynik to rata równa 2 494,72 zł z tolerancją ±0,05 zł, ostatnia rata wyrównująca 2 492,53 zł.
+**Independent Test**: Można przetestować samodzielnie na kwocie 400 000 zł, 300 rat, stopy 5,66 % rocznie, przy stałej serii wskaźnika `[{ od: '2026-01-01', stopa: 0.0355 }]` i marży 2,11 pp. Oczekiwany wynik to rata równa 2 494,72 zł z tolerancją ±0,05 zł, ostatnia rata wyrównująca 2 492,53 zł.
 
 **Acceptance Scenarios**:
 
@@ -31,7 +31,7 @@ Doradca bankowy lub klient wprowadza kwotę kredytu, liczbę rat, datę pierwsze
 
 Użytkownik może wybrać typ rat malejących, wskaźnik POLSTR 1M lub WIBOR 3M oraz podać listę nadpłat w trybie obniż raty albo skrócenia okresu. System ma uwzględnić zmianę wskaźnika w trakcie spłaty i odnieść nadpłaty do harmonogramu.
 
-**Why this priority**: To rozszerza funkcjonalność z podstawowej spłaty do scenariuszy praktyczne, które są typowe dla kredytu hipotecznego i wymagają czytelnego modelu danych.
+**Why this priority**: To rozszerza funkcjonalność z podstawowej spłaty do praktycznych scenariuszy, które są typowe dla kredytu hipotecznego i wymagają czytelnego modelu danych.
 
 **Independent Test**: Można zweryfikować osobno na wejściu z jednym wskaźnikiem i jednym nadpłaceniem, porównując zmiany w saldzie i wysokości rat po przekroczeniu kolejnego wpisu wskaźnika.
 
@@ -73,9 +73,9 @@ Użytkownik wypełnia formularz na stronie, klika „Policz”, a aplikacja pobi
 ### Functional Requirements
 
 - **FR-001**: System MUST umożliwiać wprowadzenie kwoty kredytu, liczby rat, daty pierwszej raty, marży banku, typu rat oraz wskaźnika POLSTR 1M lub WIBOR 3M.
-- **FR-002**: System MUST przyjmować listę nadpłat z pola miesiąca, kwoty i trybu: obniż ratę albo skróć okres.
-- **FR-003**: System MUST wyliczać harmonogram spłaty w domenie `src/domena/` bez pośredniego I/O i bez renderowania w React.
-- **FR-004**: System MUST udostępniać endpoint GET /api/harmonogram z parametrami w query string i zwracać JSON z tabelą rat oraz sumą odsetek.
+- **FR-002**: System MUST przyjmować listę nadpłat z pola miesiąca, kwoty i trybu: obniż ratę albo skróć okres, a pola finansowe muszą być serializowane w groszach jako liczby całkowite.
+- **FR-003**: System MUST wyliczać harmonogram spłaty w domenie `src/domena/` bez pośredniego I/O i bez renderowania w React. Walidacja reguł biznesowych należy do domeny, a walidacja kontraktu transportowego do `app/api/harmonogram/route.ts`.
+- **FR-004**: System MUST udostępniać endpoint GET /api/harmonogram z parametrami w query string i zwracać JSON z tabelą rat, sumą odsetek oraz informacją o błędzie, jeśli dane wejściowe są niepoprawne.
 - **FR-005**: System MUST stosować oprocentowanie okresu jako wartość wskaźnika + marża, zgodnie z regułą biznesową.
 - **FR-006**: System MUST uwzględniać zmiany wskaźnika w trakcie spłaty: POLSTR 1M zmienia się co miesiąc, WIBOR 3M co kwartał.
 - **FR-007**: System MUST stosować ostatnią znaną wartość wskaźnika po ostatnim wpisie serii, jeśli brak jest dalszych danych.
@@ -83,7 +83,7 @@ Użytkownik wypełnia formularz na stronie, klika „Policz”, a aplikacja pobi
 - **FR-009**: System MUST wyliczać odsetki proste w okresie, bez kapitalizacji w ramach miesiąca.
 - **FR-010**: System MUST wspierać raty równe i malejące.
 - **FR-011**: System MUST obsługiwać nadpłaty w trybie obniż raty oraz skrócenia okresu.
-- **FR-012**: System MUST zwracać tabelę rat z numerem, datą, częścią kapitałową, odsetkami, ratą i saldem po spłacie.
+- **FR-012**: System MUST zwracać tabelę rat z numerem, datą, częścią kapitałową, odsetkami, ratą i saldem po spłacie; wszystkie pola pieniężne muszą być wyrażone w groszach jako liczby całkowite.
 - **FR-013**: System MUST umożliwiać eksport wyników do CSV po stronie przeglądarki.
 - **FR-014**: System MUST wyświetlać w interfejsie ratę pierwszą i ostatnią oraz sumę odsetek za cały okres.
 - **FR-015**: System MUST zapewniać, że kwoty są przechowywane w groszach jako liczby całkowite albo w jednym miejscu zaokrąglania.
@@ -91,14 +91,15 @@ Użytkownik wypełnia formularz na stronie, klika „Policz”, a aplikacja pobi
 - **FR-017**: System MUST mieć ekran internetowy jako osobną, ostatnią historię użytkownika, z gotowym komponentem React w jednym pliku `app/page.tsx` z dyrektywą `'use client'` na pierwszej linii.
 - **FR-018**: System MUST pobierać dane z `fetch('/api/harmonogram?...')` z parametrami formularza w query string, a nie z własnej logiki obliczeniowej w komponencie.
 - **FR-019**: System MUST dostarczać wymagany zestaw MVP zgodnie z sekcją Wydanie, czyli wersja produkcyjna wdrażana na Vercel z GitHuba i adres podglądu dla każdego PR.
+- **FR-020**: System MUST obsługiwać przypadki brzegowe: niepoprawny format daty, brak danych dla wskazanego okresu, nadpłata większa niż saldo, oraz puste lub niepełne listy nadpłat.
 
 ### Key Entities *(include if feature involves data)*
 
-- **Kredyt**: kwota główna, liczba rat, data pierwszej raty, marża, wskaźnik, typ rat, lista nadpłat.
+- **Kredyt**: kwota główna, liczba rat, data pierwszej raty, marża, wskaźnik, typ rat oraz lista nadpłat.
 - **Wskaźnik**: seria danych z katalogu `dane/`, gdzie każdy wpis ma datę rozpoczęcia obowiązywania i wartość w ułamku rocznym.
 - **Okres odsetkowy**: jednostka obliczeniowa dla raty, zgodna z częstotliwością wskaźnika i datą rozliczenia.
-- **Rata**: numer raty, data, część kapitałowa, odsetki, łączna rata, saldo po spłacie.
-- **Nadpłata**: miesiąc, kwota oraz tryb działania: obniż ratę albo skróć okres.
+- **Rata**: numer raty, data, część kapitałowa w groszach, odsetki w groszach, łączna rata w groszach, saldo po spłacie w groszach.
+- **Nadpłata**: miesiąc, kwota w groszach oraz tryb działania: obniż ratę albo skróć okres.
 
 ## Success Criteria *(mandatory)*
 
