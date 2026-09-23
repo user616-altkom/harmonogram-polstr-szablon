@@ -26,12 +26,12 @@
 
 **Cel**: Podstawowa infrastruktura, która MUSI być kompletna przed rozpoczęciem prac nad historiami użytkownika.
 
-- [ ] T001 [P] Zweryfikuj i potwierdź granice domeny, danych, API i UI w `src/domena/harmonogram.ts`, `src/dane/wskazniki.ts`, `app/api/harmonogram/route.ts` i `app/page.tsx`
-- [ ] T002 [P] Zdefiniuj kontrakt danych harmonogramu w `src/domena/harmonogram.ts` i dopasuj go do kontraktu odpowiedzi API
-- [ ] T003 [P] Zdefiniuj politykę zaokrągleń i jednostki pieniężnej w `src/domena/harmonogram.ts`, aby kwoty były przechowywane w groszach i zaokrąglane w jednym miejscu
-- [ ] T004 Utwórz typ wejściowy dla parametrów kredytu i interfejs wyniku harmonogramu w `src/domena/harmonogram.ts`
-- [ ] T005 Dodaj kontrakt użycia `seriaWskaznika` i notatki walidacyjne w `src/dane/wskazniki.ts`, aby dane JSON były pobierane wyłącznie przez warstwę danych
-- [ ] T006 Zweryfikuj kontrakt API w `app/api/harmonogram/route.ts`, tak aby query params były parsowane i mapowane do wejścia domenowego bez logiki biznesowej w routingu
+- [x] T001 [P] Zweryfikuj i potwierdź granice domeny, danych, API i UI w `src/domena/harmonogram.ts`, `src/dane/wskazniki.ts`, `app/api/harmonogram/route.ts` i `app/page.tsx`
+- [x] T002 [P] Zdefiniuj kontrakt danych harmonogramu w `src/domena/harmonogram.ts` i dopasuj go do kontraktu odpowiedzi API
+- [x] T003 [P] Zdefiniuj politykę zaokrągleń i jednostki pieniężnej w `src/domena/harmonogram.ts`, aby kwoty były przechowywane w groszach i zaokrąglane w jednym miejscu
+- [x] T004 Utwórz typ wejściowy dla parametrów kredytu i interfejs wyniku harmonogramu w `src/domena/harmonogram.ts`
+- [x] T005 Dodaj kontrakt użycia `seriaWskaznika` i notatki walidacyjne w `src/dane/wskazniki.ts`, aby dane JSON były pobierane wyłącznie przez warstwę danych
+- [x] T006 Zweryfikuj kontrakt API w `app/api/harmonogram/route.ts`, tak aby query params były parsowane i mapowane do wejścia domenowego bez logiki biznesowej w routingu
 
 **Punkt kontrolny**: Podstawa gotowa - prace nad historiami użytkownika mogą się rozpocząć.
 
@@ -47,16 +47,16 @@
 
 > Uwaga: testy MUSZĄ zostać napisane najpierw i powinny failować przed implementacją.
 
-- [ ] T007 [US1] Dodaj test liczby kontrolnej dla rat równych w `tests/harmonogram-rowne-raty.test.ts` na podstawie przykładu z BRIEF i oczekiwanej raty 2 494,72 zł
-- [ ] T008 [US1] Dodaj test walidacji końcowego wyrównania w `tests/harmonogram-rowne-raty.test.ts`, aby sprawdzić, że suma części kapitałowych jest równa kwocie kredytu po zaokrągleniach
+- [x] T007 [US1] Dodaj test liczby kontrolnej dla rat równych w `tests/harmonogram-rowne-raty.test.ts` na podstawie przykładu z BRIEF i oczekiwanej raty 2 494,72 zł
+- [x] T008 [US1] Dodaj test walidacji końcowego wyrównania w `tests/harmonogram-rowne-raty.test.ts`, aby sprawdzić, że suma części kapitałowych jest równa kwocie kredytu po zaokrągleniach
 
 ### Implementacja dla User Story 1
 
-- [ ] T009 [US1] Zaimplementuj czystą kalkulację rat równych w `src/domena/harmonogram.ts` zgodnie z konwencją stopy rocznej i okresu miesięcznego z briefu
-- [ ] T010 [US1] Zaimplementuj logikę wyrównania ostatniej raty w `src/domena/harmonogram.ts`, aby ostatnia rata dopłacała lub korygowała saldo końcowe
-- [ ] T011 [US1] Dodaj model wyniku harmonogramu i wiersze rat w `src/domena/harmonogram.ts` z polami: numer, data, część kapitałowa, odsetki, rata i saldo końcowe
-- [ ] T012 [US1] Udostępnij wynik przez funkcję wejściową domeny, aby API i testy używały tego samego kontraktu wynikowego
-- [ ] T013 [US1] Zweryfikuj tę samą funkcję domenową z `app/api/harmonogram/route.ts` dla poprawnego żądania `rowne` i zwróć JSON zamiast 501
+- [x] T009 [US1] Zaimplementuj czystą kalkulację rat równych w `src/domena/harmonogram.ts` zgodnie z konwencją stopy rocznej i okresu miesięcznego z briefu
+- [x] T010 [US1] Zaimplementuj logikę wyrównania ostatniej raty w `src/domena/harmonogram.ts`, aby ostatnia rata dopłacała lub korygowała saldo końcowe
+- [x] T011 [US1] Dodaj model wyniku harmonogramu i wiersze rat w `src/domena/harmonogram.ts` z polami: numer, data, część kapitałowa, odsetki, rata i saldo końcowe
+- [x] T012 [US1] Udostępnij wynik przez funkcję wejściową domeny, aby API i testy używały tego samego kontraktu wynikowego
+- [x] T013 [US1] Zweryfikuj tę samą funkcję domenową z `app/api/harmonogram/route.ts` dla poprawnego żądania `rowne` i zwróć JSON zamiast 501
 
 **Punkt kontrolny**: W tej chwili User Story 1 jest w pełni funkcjonalny i testowalny niezależnie.
 
