@@ -98,7 +98,7 @@ export default function Page() {
   const uid = useId().replace(/:/g, '');
 
   const set = <K extends keyof Formularz>(k: K, v: Formularz[K]) => setForm((f) => ({ ...f, [k]: v }));
-  const addNadplata = () => setNadplaty((l) => [...l, { miesiac: '', kwota: '', tryb: 'rata' }]);
+  const addNadplata = () => setNadplaty((l) => [...l, { miesiac: '', kwota: '', tryb: 'okres' }]);
   const setNad = <K extends keyof Nadplata>(i: number, k: K, v: Nadplata[K]) =>
     setNadplaty((l) => l.map((n, j) => (j === i ? { ...n, [k]: v } : n)));
   const delNad = (i: number) => setNadplaty((l) => l.filter((_, j) => j !== i));

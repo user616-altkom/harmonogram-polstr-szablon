@@ -14,7 +14,7 @@ Dokumenty do przeczytania na start:
 
 - `src/domena/harmonogram.ts`: czyste funkcje obliczeniowe, bez React i bez I/O. Tu trafia cała logika.
 - `src/dane/wskazniki.ts`: serie wskaźników zaimportowane z `dane/*.json`.
-- `app/api/harmonogram/route.ts`: `GET /api/harmonogram`, parsuje parametry z query string, woła domenę i zwraca JSON tabeli rat. Nadpłaty mają format `miesiac:kwotaGr:tryb`, np. `1:200000:obnizRate`.
+- `app/api/harmonogram/route.ts`: `GET /api/harmonogram`, parsuje parametry z query string, woła domenę i zwraca JSON tabeli rat. Nadpłaty mają format `miesiac:kwotaGr:tryb`, np. `1:200000:obnizRate`; brak trybu oznacza `skrocOkres`.
 - `app/page.tsx`: ekran kalkulatora z formularzem, tabelą rat i eksportem CSV.
 - `tests/`: testy vitest domeny i danych.
 - `dane/`: serie POLSTR 1M i WIBOR 3M.
@@ -72,7 +72,7 @@ W PowerShell wpisuj komendy pojedynczo, jedna na linię (PowerShell 5.1 odrzuca 
    npm run typecheck
    ```
 
-6. Uruchom aplikację lokalnie i sprawdź w przeglądarce http://localhost:3000 oraz http://localhost:3000/api/harmonogram (501 „nie zaimplementowano” jest oczekiwane). Zatrzymaj serwer klawiszami Ctrl+C:
+6. Uruchom aplikację lokalnie i sprawdź w przeglądarce http://localhost:3000 oraz http://localhost:3000/api/harmonogram. Zatrzymaj serwer klawiszami Ctrl+C:
 
    ```
    npm run dev
@@ -106,6 +106,8 @@ git push -u origin main
 | `npm run lint` | ESLint z konfiguracją Next.js |
 
 ## Dane
+
+Nadpłata jest księgowana po racie wskazanego miesiąca, a odsetki tej raty są liczone od salda sprzed nadpłaty. Tryb `obnizRate` zachowuje liczbę rat i przelicza kolejną ratę, natomiast `skrocOkres` zachowuje ratę i kończy harmonogram wcześniej. Kwoty nadpłat w query string są podawane w groszach; np. `1:200000:obnizRate` oznacza 2000 zł po pierwszej racie. Wiele nadpłat w tym samym miesiącu jest stosowanych kolejno według kolejności wejścia.
 
 Katalog `dane/` zawiera dwie serie wskaźników w formacie JSON: `polstr-1m.json` (miesięcznie, od lipca 2025) i `wibor-3m.json` (kwartalnie, od 2020). Każdy plik ma pola `wskaznik`, `opis`, `uwaga`, `zrodla` i `wartosci` z listą wpisów `{ "od": "YYYY-MM-DD", "stopa": 0.0355 }`. Stopa jest ułamkiem, nie procentem. Wpis obowiązuje od dnia `od` do dnia przed kolejnym wpisem, a po ostatnim wpisie serii obowiązuje ostatnia znana wartość. Wartości są ilustracyjne i przybliżone, szczegóły w polu `uwaga`. Nie edytuj tych plików w trakcie ćwiczenia, testy je wczytują. W kodzie serie są dostępne przez `seriaWskaznika()` z `src/dane/wskazniki.ts`.
 
