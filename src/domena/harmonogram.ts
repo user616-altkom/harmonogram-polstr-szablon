@@ -90,12 +90,15 @@ function policzRatyMalejace(parametry: ParametryKredytu): Harmonogram {
   let saldoGr = parametry.kwotaGr;
   let sumaOdsetekGr = 0;
   const raty: Rata[] = [];
+  let czescKapitalowaBazowaGr = Math.round(parametry.kwotaGr / parametry.liczbaRat);
 
   for (let numer = 1; numer <= parametry.liczbaRat; numer += 1) {
     const data = formatujDate(dataPoMiesiacu(dataDoIso(parametry.pierwszaRata), numer - 1));
     const stawkaMiesieczna = (pobierzStawkeBazowa(parametry.wskaznik, data) + parametry.marza) / 12;
     const odsetkiGr = Math.round(saldoGr * stawkaMiesieczna);
-    const czescKapitalowaGr = Math.min(Math.round(saldoGr / (parametry.liczbaRat - numer + 1)), saldoGr);
+    const czescKapitalowaGr = numer === parametry.liczbaRat
+      ? saldoGr
+      : Math.min(czescKapitalowaBazowaGr, saldoGr);
     const rataGr = czescKapitalowaGr + odsetkiGr;
     saldoGr = Math.max(0, saldoGr - czescKapitalowaGr);
     const nadplata = znajdzNadplate(parametry.nadplaty, numer);
@@ -112,6 +115,10 @@ function policzRatyMalejace(parametry: ParametryKredytu): Harmonogram {
       saldoPoSplacieGr: saldoGr,
       ...(nadplataGr > 0 ? { nadplataGr } : {}),
     });
+
+    if (nadplata?.tryb === 'obnizRate' && saldoGr > 0) {
+      czescKapitalowaBazowaGr = Math.round(saldoGr / (parametry.liczbaRat - numer));
+    }
 
     if (saldoGr === 0) break;
   }

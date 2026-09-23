@@ -7,6 +7,19 @@ vi.mock('../src/dane/wskazniki', () => ({
 import { policzHarmonogram } from '../src/domena/harmonogram';
 
 describe('harmonogram rat malejących', () => {
+  it('zachowuje stałą część kapitałową poza ostatnią ratą wyrównującą', () => {
+    const wynik = policzHarmonogram({
+      kwotaGr: 1_000_000,
+      liczbaRat: 3,
+      marza: 0,
+      typRat: 'malejace',
+      wskaznik: 'POLSTR_1M',
+      pierwszaRata: '2026-01-01',
+    });
+
+    expect(wynik.raty.map((rata) => rata.czescKapitalowaGr)).toEqual([333_333, 333_333, 333_334]);
+  });
+
   it('utrzymuje stałą część kapitałową i malejące odsetki', () => {
     const wynik = policzHarmonogram({
       kwotaGr: 1_200_000,
