@@ -1,8 +1,8 @@
-# Kontrakt API: CR-A
+# Kontrakt interfejsu: CR-A
 
-## Wejście
+## Dane wejściowe
 
-Endpoint `GET /api/harmonogram` zachowuje istniejące parametry kredytu. Parametr `nadplaty` jest opcjonalną listą wpisów rozdzielanych przecinkami:
+Punkt dostępu `GET /api/harmonogram` zachowuje istniejące parametry kredytu. Parametr `nadplaty` jest opcjonalną listą wpisów rozdzielanych przecinkami:
 
 ```text
 miesiac:kwotaGr:tryb,miesiac:kwotaGr:tryb
@@ -22,14 +22,14 @@ Dla kompatybilności wpis bez trybu jest dozwolony:
 
 i oznacza `skrocOkres`.
 
-## Odpowiedź sukcesu
+## Odpowiedź poprawna
 
 Odpowiedź zawiera pełną tabelę rat, ratę pierwszą i ostatnią oraz sumę odsetek. Wiersz raty zawiera numer, datę, kapitał, odsetki, ratę, saldo i opcjonalnie kwotę nadpłaty. Pieniądze w odpowiedzi są prezentowane w złotych zgodnie z istniejącym kontraktem UI; domena przechowuje je w groszach.
 
-## Odpowiedź błędu
+## Odpowiedź błędna
 
 Niepoprawny miesiąc, kwota lub tryb zwraca błąd walidacji bez harmonogramu. Błąd nie może częściowo zastosować nadpłat.
 
-## Kompatybilność
+## Zgodność wsteczna
 
 Klienci wysyłający wpisy bez trzeciego składnika zachowują dotychczasowe zachowanie `skrocOkres`. Klienci wysyłający `obnizRate` otrzymują ten tryb wyłącznie dla wskazanego wpisu.

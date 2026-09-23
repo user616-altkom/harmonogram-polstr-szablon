@@ -1,35 +1,35 @@
-# Specification Quality Checklist: Tryb rozliczenia nadpłaty
+# Lista jakości specyfikacji: Tryb rozliczenia nadpłaty
 
-**Purpose**: Validate specification completeness and quality before proceeding to planning
-**Created**: 2026-09-23
-**Feature**: [spec.md](../spec.md)
+**Cel**: Sprawdzić kompletność i jakość specyfikacji przed przejściem do planowania
+**Utworzono**: 2026-09-23
+**Funkcja**: [spec.md](../spec.md)
 
-## Content Quality
+## Jakość treści
 
-- [x] No implementation details (languages, frameworks, APIs)
-- [x] Focused on user value and business needs
-- [x] Written for non-technical stakeholders
-- [x] All mandatory sections completed
+- [x] Brak szczegółów implementacyjnych (języków, frameworków i API)
+- [x] Skupienie na wartości dla użytkownika i potrzebach biznesowych
+- [x] Treść napisana dla osób nietechnicznych
+- [x] Wszystkie wymagane sekcje są uzupełnione
 
-## Requirement Completeness
+## Kompletność wymagań
 
-- [x] No [NEEDS CLARIFICATION] markers remain
-- [x] Requirements are testable and unambiguous
-- [x] Success criteria are measurable
-- [x] Success criteria are technology-agnostic (no implementation details)
-- [x] All acceptance scenarios are defined
-- [x] Edge cases are identified
-- [x] Scope is clearly bounded
-- [x] Dependencies and assumptions identified
+- [x] Nie pozostały oznaczenia [NEEDS CLARIFICATION]
+- [x] Wymagania są testowalne i jednoznaczne
+- [x] Kryteria sukcesu są mierzalne
+- [x] Kryteria sukcesu są niezależne od technologii
+- [x] Wszystkie scenariusze akceptacji są zdefiniowane
+- [x] Zidentyfikowano przypadki brzegowe
+- [x] Zakres jest jasno ograniczony
+- [x] Zidentyfikowano zależności i założenia
 
-## Feature Readiness
+## Gotowość funkcji
 
-- [x] All functional requirements have clear acceptance criteria
-- [x] User scenarios cover primary flows
-- [x] Feature meets measurable outcomes defined in Success Criteria
-- [x] No implementation details leak into specification
+- [x] Wszystkie wymagania funkcjonalne mają jasne kryteria akceptacji
+- [x] Scenariusze użytkownika obejmują główne przepływy
+- [x] Funkcja spełnia mierzalne wyniki z sekcji Kryteria sukcesu
+- [x] Specyfikacja nie zawiera szczegółów implementacyjnych
 
-## Notes
+## Uwagi
 
 - Specyfikacja jest gotowa do przejścia przez `/speckit-clarify` lub `/speckit-plan`.
 - Wartości z przypadku kontrolnego CR-A wymagają potwierdzenia względem aktualnej serii WIBOR albo jawnej stałej serii w teście.

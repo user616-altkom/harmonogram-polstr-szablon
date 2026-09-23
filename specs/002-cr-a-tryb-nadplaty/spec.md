@@ -1,12 +1,12 @@
-# Feature Specification: Tryb rozliczenia nadpłaty
+# Specyfikacja funkcji: Tryb rozliczenia nadpłaty
 
-**Feature Branch**: `002-cr-a-tryb-nadplaty`
+**Gałąź funkcji**: `002-cr-a-tryb-nadplaty`
 
-**Created**: 2026-09-23
+**Utworzono**: 2026-09-23
 
-**Status**: Draft
+**Status**: Wersja robocza
 
-**Input**: User description: "Dodaj nową funkcję CR-A „Wybór skutku nadpłaty: skrócenie okresu albo obniżenie raty”. Każda nadpłata ma tryb `skrocOkres` albo `obnizRate`; brak trybu oznacza `skrocOkres`; `obnizRate` zachowuje liczbę rat i przelicza ratę od salda po nadpłacie; `skrocOkres` zachowuje ratę i kończy harmonogram wcześniej; suma kapitału rat i nadpłat równa się kwocie kredytu; nadpłata jest księgowana po racie miesiąca, a odsetki są liczone od salda sprzed nadpłaty."
+**Wejście**: Opis użytkownika: "Dodaj nową funkcję CR-A „Wybór skutku nadpłaty: skrócenie okresu albo obniżenie raty”. Każda nadpłata ma tryb `skrocOkres` albo `obnizRate`; brak trybu oznacza `skrocOkres`; `obnizRate` zachowuje liczbę rat i przelicza ratę od salda po nadpłacie; `skrocOkres` zachowuje ratę i kończy harmonogram wcześniej; suma kapitału rat i nadpłat równa się kwocie kredytu; nadpłata jest księgowana po racie miesiąca, a odsetki są liczone od salda sprzed nadpłaty."
 
 ## Clarifications
 
@@ -14,17 +14,17 @@
 
 - Q: Jak system powinien obsłużyć dwie nadpłaty przypisane do tego samego miesiąca? → A: Dopuszczać wiele nadpłat i stosować je kolejno według kolejności na wejściu.
 
-## User Scenarios & Testing *(mandatory)*
+## Scenariusze użytkownika i testowanie *(wymagane)*
 
-### User Story 1 - Obniżenie raty po nadpłacie (Priority: P1)
+### Historia użytkownika 1 - Obniżenie raty po nadpłacie (Priorytet: P1)
 
 Doradca wybiera dla nadpłaty skutek „obniż ratę”, aby klient zachował pierwotny termin zakończenia kredytu i otrzymał niższą ratę od kolejnego okresu.
 
-**Why this priority**: To jeden z dwóch głównych skutków nadpłaty wymaganych przez produkt i bezpośrednio odpowiada potrzebie porównania wariantów przez doradcę.
+**Dlaczego ten priorytet**: To jeden z dwóch głównych skutków nadpłaty wymaganych przez produkt i bezpośrednio odpowiada potrzebie porównania wariantów przez doradcę.
 
-**Independent Test**: Dla kredytu 300 000 zł, 240 rat, oprocentowania 6,66% rocznie i nadpłaty 30 000 zł po pierwszej racie można niezależnie sprawdzić saldo po nadpłacie, nową ratę oraz zachowanie liczby rat.
+**Test niezależny**: Dla kredytu 300 000 zł, 240 rat, oprocentowania 6,66% rocznie i nadpłaty 30 000 zł po pierwszej racie można niezależnie sprawdzić saldo po nadpłacie, nową ratę oraz zachowanie liczby rat.
 
-**Acceptance Scenarios**:
+**Scenariusze akceptacji**:
 
 1. **Given** kredyt 300 000 zł na 240 rat z oprocentowaniem 6,66% i nadpłatą 30 000 zł po pierwszej racie, **When** użytkownik wybiera `obnizRate`, **Then** saldo po pierwszej racie i nadpłacie wynosi 269 399,93 zł, a rata od drugiego okresu wynosi 2 038,11 zł.
 2. **Given** nadpłata w trybie `obnizRate`, **When** harmonogram zostanie wyliczony, **Then** liczba zaplanowanych rat pozostaje równa pierwotnej liczbie rat.
@@ -32,15 +32,15 @@ Doradca wybiera dla nadpłaty skutek „obniż ratę”, aby klient zachował pi
 
 ---
 
-### User Story 2 - Skrócenie okresu po nadpłacie (Priority: P1)
+### Historia użytkownika 2 - Skrócenie okresu po nadpłacie (Priorytet: P1)
 
 Doradca wybiera dla nadpłaty skutek „skróć okres”, aby klient zachował ratę i zakończył spłatę wcześniej.
 
-**Why this priority**: To drugi główny wariant umowny i domyślny sposób zachowania kompatybilności z dotychczasowym kalkulatorem.
+**Dlaczego ten priorytet**: To drugi główny wariant umowny i domyślny sposób zachowania kompatybilności z dotychczasowym kalkulatorem.
 
-**Independent Test**: Ten sam przypadek kredytu i nadpłaty pozwala sprawdzić niezmienioną ratę, skrócenie harmonogramu do 196 rat oraz ostatnią ratę wyrównującą.
+**Test niezależny**: Ten sam przypadek kredytu i nadpłaty pozwala sprawdzić niezmienioną ratę, skrócenie harmonogramu do 196 rat oraz ostatnią ratę wyrównującą.
 
-**Acceptance Scenarios**:
+**Scenariusze akceptacji**:
 
 1. **Given** kredyt 300 000 zł na 240 rat z nadpłatą 30 000 zł po pierwszej racie, **When** użytkownik wybiera `skrocOkres`, **Then** rata pozostaje równa racie sprzed nadpłaty, a harmonogram zawiera 196 rat łącznie.
 2. **Given** harmonogram w trybie `skrocOkres`, **When** użytkownik sprawdzi ostatnią ratę, **Then** ostatnia rata wyrównująca wynosi 2 200,53 zł, a saldo końcowe wynosi zero.
@@ -48,20 +48,20 @@ Doradca wybiera dla nadpłaty skutek „skróć okres”, aby klient zachował r
 
 ---
 
-### User Story 3 - Porównanie skutków nadpłaty (Priority: P2)
+### Historia użytkownika 3 - Porównanie skutków nadpłaty (Priorytet: P2)
 
 Doradca wybiera tryb nadpłaty dla każdego wpisu, a ekran wyświetla harmonogram wynikający z wybranego trybu. Doradca może wykonać dwa wyliczenia tego samego kredytu, aby porównać niższą ratę z wcześniejszym końcem spłaty.
 
-**Why this priority**: Porównanie wariantów jest celem biznesowym CR-A, ale zależy od poprawnej obsługi obu niezależnych trybów.
+**Dlaczego ten priorytet**: Porównanie wariantów jest celem biznesowym CR-A, ale zależy od poprawnej obsługi obu niezależnych trybów.
 
-**Independent Test**: Dwa wyliczenia tego samego kredytu, nadpłaty i okresu można porównać po wysokości raty, liczbie rat, saldzie końcowym i sumie kapitału.
+**Test niezależny**: Dwa wyliczenia tego samego kredytu, nadpłaty i okresu można porównać po wysokości raty, liczbie rat, saldzie końcowym i sumie kapitału.
 
-**Acceptance Scenarios**:
+**Scenariusze akceptacji**:
 
 1. **Given** te same parametry kredytu i nadpłaty, **When** doradca wykona osobne wyliczenia z wybranym trybem, **Then** wariant `obnizRate` ma pierwotną liczbę rat, a `skrocOkres` ma krótszy harmonogram.
 2. **Given** oba warianty, **When** doradca porówna spłatę kapitału, **Then** w obu przypadkach suma części kapitałowych rat i kwot nadpłat równa się kwocie kredytu.
 
-### Edge Cases
+### Przypadki brzegowe
 
 - Brak trybu przy nadpłacie oznacza `skrocOkres` i nie może zmienić dotychczasowego zachowania klienta.
 - Nadpłata jest księgowana po naliczeniu i spłacie raty za wskazany miesiąc; odsetki tej raty liczone są od salda sprzed nadpłaty.
@@ -71,9 +71,9 @@ Doradca wybiera tryb nadpłaty dla każdego wpisu, a ekran wyświetla harmonogra
 - Zmiana stopy wskaźnika w trakcie harmonogramu nie może zmienić kolejności: odsetki przed nadpłatą, nadpłata po racie.
 - Kwoty niecałkowite w groszach oraz niepoprawne numery miesięcy są odrzucane.
 
-## Requirements *(mandatory)*
+## Wymagania *(wymagane)*
 
-### Functional Requirements
+### Wymagania funkcjonalne
 
 - **FR-001**: System MUST obsługiwać tryb nadpłaty `skrocOkres`.
 - **FR-002**: System MUST obsługiwać tryb nadpłaty `obnizRate`.
@@ -91,16 +91,16 @@ Doradca wybiera tryb nadpłaty dla każdego wpisu, a ekran wyświetla harmonogra
 - **FR-014**: System MUST uzyskać dla przypadku kontrolnego CR-A 196 rat łącznie i ostatnią ratę 2 200,53 zł w trybie `skrocOkres`.
 - **FR-015**: System MUST umożliwić doradcy wybranie skutku nadpłaty niezależnie dla każdej nadpłaty.
 
-### Key Entities
+### Kluczowe encje
 
 - **Nadpłata**: kwota częściowej wcześniejszej spłaty, miesiąc zaksięgowania i opcjonalny tryb skutku; nadpłaty z tym samym miesiącem zachowują kolejność wejścia.
 - **Tryb nadpłaty**: `obnizRate` albo `skrocOkres`, przy czym brak wartości oznacza `skrocOkres`.
 - **Rata**: okresowa spłata kapitału i odsetek, na którą wpływa saldo sprzed nadpłaty.
 - **Harmonogram**: uporządkowana lista rat z saldem po racie i nadpłacie oraz podsumowaniem odsetek.
 
-## Success Criteria *(mandatory)*
+## Kryteria sukcesu *(wymagane)*
 
-### Measurable Outcomes
+### Mierzalne wyniki
 
 - **SC-001**: Dla przypadku kontrolnego CR-A system zwraca ratę 2 038,11 zł od drugiego okresu w trybie `obnizRate`.
 - **SC-002**: Dla przypadku kontrolnego CR-A system zwraca 196 rat łącznie i ostatnią ratę 2 200,53 zł w trybie `skrocOkres`.
@@ -109,7 +109,7 @@ Doradca wybiera tryb nadpłaty dla każdego wpisu, a ekran wyświetla harmonogra
 - **SC-005**: Doradca może wybrać tryb nadpłaty i otrzymać wynik bez ręcznego przeliczania parametrów.
 - **SC-006**: Wszystkie dotychczasowe testy regresyjne aplikacji pozostają zielone.
 
-## Assumptions
+## Założenia
 
 - Wskaźnik WIBOR 3M 4,55% dla przypadku CR-A jest dostarczony przez istniejącą serię danych lub test używa jawnej serii stałej.
 - Kwoty wewnętrzne są całkowitymi groszami, a kwota w opisie biznesowym jest prezentowana w złotych.

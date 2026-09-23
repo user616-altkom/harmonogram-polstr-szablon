@@ -1,4 +1,4 @@
-# Data Model: CR-A tryb nadpłaty
+# Model danych: CR-A tryb nadpłaty
 
 ## Parametry kredytu
 

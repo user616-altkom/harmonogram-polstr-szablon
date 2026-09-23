@@ -1,6 +1,6 @@
-# Quickstart: CR-A tryb nadpłaty
+# Szybki start: CR-A tryb nadpłaty
 
-## Prerequisites
+## Wymagania wstępne
 
 - Node.js 22+
 - zainstalowane zależności projektu

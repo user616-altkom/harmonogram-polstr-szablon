@@ -1,4 +1,4 @@
-# Research: CR-A tryb nadpłaty
+# Badanie: CR-A tryb nadpłaty
 
 ## Decyzja: dwa tryby skutku nadpłaty
 

@@ -6,21 +6,21 @@
 
 **Testy**: Wymagane test-first dla logiki finansowej i liczb kontrolnych CR-A.
 
-**Organizacja**: Zadania są pogrupowane według historii użytkownika. Każda historia ma własne testy i może być walidowana niezależnie po ukończeniu zależności foundational.
+**Organizacja**: Zadania są pogrupowane według historii użytkownika. Każda historia ma własne testy i może być walidowana niezależnie po ukończeniu zależności fundamentu.
 
-## Format: `[ID] [P?] [Story] Opis`
+## Format: `[ID] [P?] [Historia] Opis`
 
 - **[P]**: Można wykonać równolegle, bo zadania dotyczą różnych plików i nie mają nieukończonych zależności.
-- **[Story]**: Historia użytkownika, której dotyczy zadanie.
+- **[Historia]**: Historia użytkownika, której dotyczy zadanie.
 - Każdy opis wskazuje konkretny plik.
 
-## Faza 1: Setup
+## Faza 1: Przygotowanie
 
 **Cel**: Wykorzystać istniejący projekt Next.js/Vitest bez dodawania zależności.
 
-- Brak zadań setupu: repozytorium, konfiguracja i zależności już istnieją.
+- Brak zadań w tej fazie: repozytorium, konfiguracja i zależności już istnieją.
 
-## Faza 2: Foundational
+## Faza 2: Fundament
 
 **Cel**: Przygotować wspólny kontrakt trybów nadpłat przed implementacją historii użytkownika.
 
@@ -32,7 +32,7 @@
 
 **Punkt kontrolny**: Kontrakt trybu, domyślny `skrocOkres`, walidacja i kolejność nadpłat są określone testami.
 
-## Faza 3: User Story 1 - Obniżenie raty po nadpłacie (Priority: P1)
+## Faza 3: Historia użytkownika 1 - Obniżenie raty po nadpłacie (Priorytet: P1)
 
 **Cel**: Zachować pierwotną liczbę rat i przeliczyć ratę po nadpłacie.
 
@@ -52,7 +52,7 @@
 
 **Punkt kontrolny**: US1 działa niezależnie, przechodzi liczby kontrolne CR-A i zachowuje 240 rat.
 
-## Faza 4: User Story 2 - Skrócenie okresu po nadpłacie (Priority: P1)
+## Faza 4: Historia użytkownika 2 - Skrócenie okresu po nadpłacie (Priorytet: P1)
 
 **Cel**: Zachować ratę i zakończyć harmonogram wcześniej z ostatnią ratą wyrównującą.
 
@@ -72,7 +72,7 @@
 
 **Punkt kontrolny**: US2 zachowuje ratę, skraca okres, obsługuje brak trybu i zamyka saldo.
 
-## Faza 5: User Story 3 - Porównanie skutków nadpłaty (Priority: P2)
+## Faza 5: Historia użytkownika 3 - Porównanie skutków nadpłaty (Priorytet: P2)
 
 **Cel**: Pozwolić doradcy obliczyć i porównać oba warianty dla tych samych parametrów.
 
@@ -92,9 +92,9 @@
 
 **Punkt kontrolny**: Doradca może przygotować oba warianty, a UI nie zawiera obliczeń finansowych.
 
-## Faza 6: Polish & Cross-Cutting Concerns
+## Faza 6: Dopracowanie i zmiany przekrojowe
 
-**Cel**: Ujednolicić dokumentację, quickstart i walidację końcową.
+**Cel**: Ujednolicić dokumentację, szybki start i walidację końcową.
 
 - [x] T024 [P] Zaktualizuj `README.md` o kolejność księgowania nadpłaty, tryby, domyślne `skrocOkres` i format kwoty w groszach.
 - [x] T025 [P] Zaktualizuj `specs/002-cr-a-tryb-nadplaty/quickstart.md` o uruchamialne przykłady obu trybów i wielu nadpłat w tym samym miesiącu.
@@ -107,40 +107,40 @@
 ## Zależności i kolejność wykonania
 
 ```text
-Faza 2 → US1 → US2 → US3 → Polish
+Faza 2 → US1 → US2 → US3 → Dopracowanie
 ```
 
-- US1 zależy od foundational i dostarcza reamortyzację `obnizRate`.
+- US1 zależy od fundamentu i dostarcza reamortyzację `obnizRate`.
 - US2 zależy od modelu nadpłaty z US1, ale zachowuje niezależny test trybu `skrocOkres`.
 - US3 zależy od obu trybów, kontraktu API i modelu UI.
-- Polish zależy od zakończenia wszystkich wybranych historii.
+- Dopracowanie zależy od zakończenia wszystkich wybranych historii.
 
 ## Możliwości równoległe
 
-### Foundational
+### Fundament
 
 - T001, T002, T004 i T005 mogą być przygotowane równolegle, jeśli kontrakt domeny jest uzgadniany wspólnie.
 
-### User Story 1
+### Historia użytkownika 1
 
 - T006, T007 i T008 mogą być napisane równolegle przed T009–T011.
 
-### User Story 2
+### Historia użytkownika 2
 
 - T012, T013 i T014 mogą być napisane równolegle przed T015–T017.
 
-### User Story 3
+### Historia użytkownika 3
 
 - T018 i T019 mogą być przygotowane równolegle przed T020–T023.
 - T020 może być rozwijane równolegle z T018–T019, ale T021 zależy od finalnego kontraktu API.
 
-### Polish
+### Dopracowanie
 
 - T024, T025, T026 i T028 mogą być wykonane równolegle; T027 wykonaj po ich zakończeniu.
 
 ## Strategia implementacji
 
-1. MVP: Faza 2, US1 i US2, ponieważ oba warianty są wymaganiami P1.
+1. Minimalny zakres: Faza 2, US1 i US2, ponieważ oba warianty są wymaganiami P1.
 2. Następnie US3: porównanie wariantów, API i UI.
-3. Na końcu Polish: dokumentacja, pełna walidacja i przygotowanie do PR.
-4. Każdą zmianę logiki finansowej wykonuj test-first: czerwony test, najmniejsza poprawka, zielona regresja.
+3. Na końcu dopracowanie: dokumentacja, pełna walidacja i przygotowanie do PR.
+4. Każdą zmianę logiki finansowej wykonuj w kolejności test-first: czerwony test, najmniejsza poprawka, zielona regresja.
